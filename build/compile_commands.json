@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/broesel233/programming/cpp_projects/CNNKdev/build",
+  "command": "/usr/bin/c++ -std=c++17 -g -o CMakeFiles/cnnkdev.dir/main.cpp.o -c /home/broesel233/programming/cpp_projects/CNNKdev/main.cpp",
+  "file": "/home/broesel233/programming/cpp_projects/CNNKdev/main.cpp"
+},
+{
+  "directory": "/home/broesel233/programming/cpp_projects/CNNKdev/build",
+  "command": "/usr/bin/c++ -std=c++17 -g -o CMakeFiles/network_lib.dir/lib/knn/network.cpp.o -c /home/broesel233/programming/cpp_projects/CNNKdev/lib/knn/network.cpp",
+  "file": "/home/broesel233/programming/cpp_projects/CNNKdev/lib/knn/network.cpp"
+}
+]
