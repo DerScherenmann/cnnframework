@@ -21,9 +21,9 @@
 
 class ConvolutionLayer : public Layer {
 public:
-    
+
     /**
-     * 
+     *
      */
     ConvolutionLayer(size_t t_height,size_t t_width,size_t t_depth,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes) :
                         Layer(t_height,t_width,t_depth,Layer::types::CONV), m_num_filters(t_num_filters), m_filter_sizes(t_filter_sizes), m_stride(t_stride) {
@@ -35,13 +35,13 @@ public:
             m_filters.push_back(k);
         }
     };
-    
+
     std::vector<Filter> get_filters(){
         return m_filters;
     }
-    
-    ConvolutionLayer(const ConvolutionLayer& orig) : Layer(orig) {};
-    virtual ~ConvolutionLayer(){};
+
+    //ConvolutionLayer(const ConvolutionLayer& orig) : Layer(orig) {};
+    //virtual ~ConvolutionLayer(){};
 
     /**
      * Forward input volume through convolutional layer
@@ -73,7 +73,7 @@ public:
 
         return 0;
     }
-    
+
 private:
     size_t m_num_filters;
     size_t m_filter_sizes;

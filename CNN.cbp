@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CNN" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/CNN" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Weffc++" />
+					<Add option="-std=c++20" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/CNN" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++20" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++20" />
+			<Add option="-fexceptions" />
+			<Add directory="lib" />
+		</Compiler>
+		<Unit filename="ActivationLayer.cpp" />
+		<Unit filename="ActivationLayer.h" />
+		<Unit filename="ConnectedLayer.cpp" />
+		<Unit filename="ConnectedLayer.h" />
+		<Unit filename="ConvolutionLayer.cpp" />
+		<Unit filename="ConvolutionLayer.h" />
+		<Unit filename="PoolLayer.cpp" />
+		<Unit filename="PoolLayer.h" />
+		<Unit filename="README.md" />
+		<Unit filename="convnetwork.cpp" />
+		<Unit filename="convnetwork.h" />
+		<Unit filename="filter.cpp" />
+		<Unit filename="filter.h" />
+		<Unit filename="layer.cpp" />
+		<Unit filename="layer.h" />
+		<Unit filename="lib/knn/mathhelper.cpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="lib/knn/mathhelper.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="lib/knn/network.cpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="lib/knn/network.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="lib/knn/neuron.cpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="lib/knn/neuron.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="main.cpp" />
+		<Unit filename="t10k-images.idx3-ubyte" />
+		<Unit filename="t10k-labels.idx1-ubyte" />
+		<Unit filename="train-images.idx3-ubyte" />
+		<Unit filename="train-labels.idx1-ubyte" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

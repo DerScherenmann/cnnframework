@@ -14,5 +14,5 @@ float Math::rng() {
 
 float Math::rand_in_range(float min, float max) {
     return std::uniform_real_distribution<float>{min, max}(generator);
-}    
+}
 

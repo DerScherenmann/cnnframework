@@ -15,7 +15,7 @@
 #define FILTER_H
 #pragma once
 
-#include "lib/knn/mathhelper.h"
+#include "knn/mathhelper.h"
 #include "layer.h"
 
 #include <iostream>
@@ -43,20 +43,30 @@ public:
     }
 
     Layer calculate_output(Layer& t_input_layer){
-        size_t output_width = (t_input_layer.get_values().size()-m_width+2*t_input_layer.get_padding())/m_stride +2;
+        size_t output_width = (t_input_layer.get_width()-m_width+2*t_input_layer.get_padding())/m_stride +2;
         size_t output_height = output_width;
-        
-        std::cout << m_width << ":" << m_height;
-        
+
         std::vector<std::vector<float>> output_values;
-        for(size_t width = 1;width < t_input_layer.get_values().size()-2;width+=m_stride){
+        for(size_t width = 1;width < t_input_layer.get_width()-1;width+=m_stride){
             std::vector<float> output_column;
-            for(size_t height = 1;height < t_input_layer.get_values()[0].size()-2;height+=m_stride){
+            for(size_t height = 1;height < t_input_layer.get_height()-1;height+=m_stride){
                 float output = 0;
                 for(size_t i = 0;i < m_width;i++){
                     float inner_sum = 0;
-                    for(size_t j = 0;j < m_height;j++){
-                        inner_sum += t_input_layer.get_values()[width-i][height-j] * m_values[i][j];
+                    if(width == t_input_layer.get_width()-2){
+                        for(size_t j = 0;j < m_height;j++){
+                            inner_sum += t_input_layer.get_values()[width-i+1][height-j] * m_values[i][j];
+                        }
+                    }
+                    if(width == t_input_layer.get_height()-2){
+                        for(size_t j = 0;j < m_height;j++){
+                            inner_sum += t_input_layer.get_values()[width-i][height-j+1] * m_values[i][j];
+                        }
+                    }
+                    else{
+                        for(size_t j = 0;j < m_height;j++){
+                            inner_sum += t_input_layer.get_values()[width-i][height-j] * m_values[i][j];
+                        }
                     }
                     output += inner_sum;
                 }
@@ -64,7 +74,7 @@ public:
             }
             output_values.push_back(output_column);
         }
-        
+
         Layer output_layer = Layer(output_width,output_height,t_input_layer.get_depth(),Layer::types::OUTPUT);
         output_layer.set_values(output_values);
         return output_layer;

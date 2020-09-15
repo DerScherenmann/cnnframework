@@ -17,16 +17,15 @@
 #include <utility>
 
 #include "layer.h"
-#include "lib/knn/network.h"
+#include "knn/network.h"
 
 class ConnectedLayer : public Layer{
 public:
-    ConnectedLayer(size_t t_functiontype, std::vector<std::pair<size_t,size_t>> t_sizes) : Layer(m_width,m_height,m_depth,Layer::types::CONNECTED), m_functiontype(t_functiontype){
+    ConnectedLayer(size_t t_functiontype, std::vector<std::pair<int,int>> t_sizes) : Layer(m_width,m_height,m_depth,Layer::types::CONNECTED), m_functiontype(t_functiontype){
         m_net = new Network(t_sizes);
     };
-    ConnectedLayer(const ConnectedLayer& orig) : Layer(orig) {
-
-    };
+    //ConnectedLayer(const ConnectedLayer& orig) : Layer(orig) {
+    //};
     virtual ~ConnectedLayer(){
 
     };
@@ -34,6 +33,9 @@ public:
         if(m_net == NULL) return 1;
         m_net->feedForward(input);
         return 0;
+    };
+    enum functiontype{
+        SWISH = 0,SIGMOID,RELU
     };
 private:
     size_t m_functiontype;

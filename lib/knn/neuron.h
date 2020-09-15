@@ -2,11 +2,12 @@
 #define NEURON_H
 #pragma once
 #include <vector>
+#include "mathhelper.h"
 class Neuron
 {
 	public:
         Neuron(float activation,int type,int mode);
-        
+
 		float activation = 0;
 		float sum = 0;
 		float delta = 0;
@@ -23,5 +24,7 @@ class Neuron
 		float act(float x);
 		float actPrime(float x);
 		int mode = 0;
+    private:
+        Math math;
 };
 #endif

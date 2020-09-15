@@ -14,7 +14,7 @@
 #ifndef LAYER_H
 #define LAYER_H
 
-#include "lib/knn/mathhelper.h"
+#include "knn/mathhelper.h"
 
 class Layer {
 public:
@@ -27,7 +27,7 @@ public:
             }
         }
     };
-    Layer(const Layer& orig){};
+    //Layer(const Layer& orig){};
     virtual ~Layer(){};
 
     enum types{
@@ -54,6 +54,7 @@ public:
         return m_zero_padding;
     }
 protected:
+    //outer vector width inner height
     std::vector<std::vector<float>> m_values;
     size_t m_width;
     size_t m_height;

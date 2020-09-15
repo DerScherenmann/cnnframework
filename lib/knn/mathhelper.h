@@ -1,12 +1,13 @@
-#ifndef MATHHELPER_H
-#define MATHHELPER_H
 #pragma once
 #include "math.h"
 #include <random>
 #include <vector>
-class Math {  
-    public: 
-        
+class Math {
+    public:
+
+        float rng();
+        float rand_in_range(float min, float max);
+
         /**********************************************************************/
         /*** sigmoid.c:  This code contains the function routine            ***/
         /***             sigmoid() which performs the unipolar sigmoid      ***/
@@ -58,9 +59,6 @@ class Math {
 
                 return return_value;
         }
-        
-        float rng();
-        float rand_in_range(float min, float max);  
 
         //equivalent to randn from numpy/, returns a vector matrix with dimensions y*x (i think)
         std::vector<std::vector<float>> matrix(int y, int x) {
@@ -85,7 +83,7 @@ class Math {
             }
             output.push_back(data);
             data.clear();
-            }   
+            }
             return output;
         }
 
@@ -120,4 +118,3 @@ class Math {
                 return output;
         }
 };
-#endif

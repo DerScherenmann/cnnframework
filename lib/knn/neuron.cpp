@@ -1,6 +1,5 @@
 #include <vector>
 #include <iostream>
-#include "mathhelper.h"
 #include "neuron.h"
 
 //activation is a number held by the Neuron
@@ -17,7 +16,6 @@ void Neuron::calculateActivation(std::vector<Neuron> &neurons, std::vector<float
     //skip this if neuron is bias
 
     if (type == NEURON) {
-
         activation = 0;
         for (int i = 0; i < neurons.size(); i++) {
             activation += neurons[i].activation * weights[i];
@@ -29,7 +27,7 @@ void Neuron::calculateActivation(std::vector<Neuron> &neurons, std::vector<float
 }
 
 float Neuron::act(float x){
-	Math math;
+
 	if(mode == SWISH){
 		x = math.swish(x);
 	}
@@ -40,7 +38,7 @@ float Neuron::act(float x){
 }
 
 float Neuron::actPrime(float x){
-	Math math;
+
 	if(mode == SWISH){
 		x = math.swishPrime(x);
 	}

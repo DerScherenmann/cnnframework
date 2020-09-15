@@ -12,6 +12,7 @@
 #include "convnetwork.h"
 #include "PoolLayer.h"
 #include "ConvolutionLayer.h"
+#include "ConnectedLayer.h"
 #include "filter.h"
 
 typedef unsigned char uchar;
@@ -22,14 +23,19 @@ uchar* testlabels;
 size_t readStuff(size_t number_of_images,size_t number_of_labels);
 
 size_t Convultional::train(std::vector<std::pair<std::vector<float>, std::vector<float>>> &training_data,float learning_rate,float momentum, size_t epochs){
-    
+
+    for(size_t epoch = 0;epoch < epochs;epoch++){
+
+    }
+
     return 0;
 }
 
 size_t Convultional::test(){
-    
+
     std::vector<std::vector<ConvolutionLayer>> architecture;
-    
+    std::vector<PoolLayer> last_layers;
+
     /*
     read_stuff(1,1);
     std::vector<std::vector<float>> values;
@@ -64,44 +70,11 @@ size_t Convultional::test(){
 
     std::cout << std::endl;
 
-    
-    /*
-     * Test for PoolLayer
-     */
-    std::cout << "Test Pool Layer: " << std::endl;
-
-    PoolLayer pool = PoolLayer(3,3,depth);
-    pool.pool(inputs);
-
-    std::cout << std::endl;
-    for(size_t i = 0;i<pool.get_outputs().size();i++){
-        for(size_t j = 0;j<pool.get_outputs()[0].size();j++){
-            for(size_t k = 0;k < pool.get_outputs()[0][0].size();k++){
-                std::cout << " " << pool.get_outputs()[i][j][k];
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-    for(size_t i = 0;i<pool.get_org_index().size();i++){
-        for(size_t j = 0;j < pool.get_org_index()[0].size();j++){
-            for(size_t k = 0;k < pool.get_org_index()[0][0].size();k++){
-                auto [x,y,z] = pool.get_org_index()[i][j][k].second;
-                std::cout << pool.get_org_index()[i][j][k].first << ":" << x << "," << y << "," << z << " ";
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl << std::endl;
-
-    
     /*
      * Test for Convolutional Layer
      */
-    std::cout << "Test Convolutional Layer / zero padding: " << std::endl;
-    
+    std::cout << "Test Convolutional Layer / zero padding: " << std::endl << std::endl;
+
     std::vector<ConvolutionLayer> conv_layers;
     for(size_t i = 0;i < inputs.size();i++){
 
@@ -117,38 +90,110 @@ size_t Convultional::test(){
             std::cout << std::endl;
         }
         //add filters
-        
+
         std::cout << std::endl;
         std::cout << std::endl;
     }
     architecture.push_back(conv_layers);
-    
-    
+
+    std::cout << std::endl << std::endl;
+
     /*
      * Test for filters
      */
-    std::cout << "Test Filters: " << std::endl;
-    
-    for(size_t i = 0; i < inputs.size();i++){
-        
-        for(ConvolutionLayer conv : architecture[i]) {
-            std::vector<Filter> filters = conv.get_filters();
+    std::cout << "Test Filters: " << std::endl << std::endl;
+
+    for(size_t i = 0; i < architecture.size();i++){
+
+        for(size_t j = 0;j < architecture[i].size();j++) {
+            std::vector<Filter> filters = architecture[i][j].get_filters();
+            std::cout << "Filters: " << filters.size() << std::endl;
             if(filters.size() == 0){
                 break;
             }
             for(Filter filter:filters){
-                Layer output = filter.calculate_output(conv);
+                Layer output = filter.calculate_output(architecture[i][j]);
                 for(size_t width = 0;width < output.get_values().size();width++){
                     for(size_t height = 0;height < output.get_values()[0].size();height++){
                         std::cout << output.get_values()[width][height] << " ";
                     }
                     std::cout << std::endl;
                 }
+                std::cout << std::endl;
             }
         }
-        
+        std::cout << std::endl << std::endl;
     }
-    
+
+    std::cout << std::endl << std::endl;
+
+    /*
+     * Test for PoolLayer
+     */
+    std::cout << "Test Pool Layer: " << std::endl;
+
+    for(size_t i = 0; i < architecture.size();i++){
+
+        for(size_t j = 0;j < architecture[i].size();j++) {
+            std::vector<Filter> filters = architecture[i][j].get_filters();
+            if(filters.size() == 0){
+                break;
+            }
+
+            for(Filter filter:filters){
+                Layer output = filter.calculate_output(architecture[i][j]);
+
+                PoolLayer pool = PoolLayer(2,2,1,2);
+                pool.pool(output.get_values());
+
+                std::cout << std::endl;
+                for(size_t j = 0;j<pool.get_values().size();j++){
+                    for(size_t k = 0;k < pool.get_values()[0].size();k++){
+                        std::cout << " " << pool.get_values()[j][k];
+                    }
+                    std::cout << std::endl;
+                }
+
+                std::cout << std::endl;
+                for(size_t j = 0;j < pool.get_org_index().size();j++){
+                    for(size_t k = 0;k < pool.get_org_index()[0].size();k++){
+                        auto [x,y] = pool.get_org_index()[j][k].second;
+                        std::cout << pool.get_org_index()[j][k].first << ": " << x << "," << y << " ";
+                    }
+                    std::cout << std::endl;
+                }
+
+                last_layers.push_back(pool);
+            }
+        }
+        std::cout << std::endl << std::endl;
+    }
+
+    std::cout << std::endl << std::endl;
+
+    /*
+     * Test for connected layer
+     */
+    std::cout << "Test connected layer: " << std::endl << std::endl;
+
+    std::vector<float> connected_inputs;
+
+    for(PoolLayer pool:last_layers){
+
+        //make all pool outputs to a 1d vector
+        for(size_t i = 0;i<pool.get_values().size();i++){
+            for(size_t j = 0;j < pool.get_values()[0].size();j++){
+                connected_inputs.push_back(pool.get_values()[i][j]);
+            }
+        }
+    }
+    std::vector<std::vector<float>> dim;
+    dim.push_back(connected_inputs);
+
+    std::vector<std::pair<int,int>> sizes;
+    ConnectedLayer connected = ConnectedLayer(ConnectedLayer::functiontype::SWISH,sizes);
+    connected.set_values(dim);
+
     std::cout << std::endl << std::endl;
 
     return 0;

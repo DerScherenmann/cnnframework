@@ -13,7 +13,7 @@
 
 #include <iostream>
 
-#include "convnetwork.cpp"
+#include "convnetwork.h"
 
 /*
  *

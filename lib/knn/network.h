@@ -1,13 +1,9 @@
-#ifndef NETWORK_H
-#define NETWORK_H
 #pragma once
 #include <vector>
 #include <map>
 #include <string>
-#include "mathhelper.h"
-#include "mathhelper.cpp"
 #include "neuron.h"
-#include "neuron.cpp"
+
 class Network
 {
 public:
@@ -55,4 +51,3 @@ private:
     //Layer -> Neuron -> class values
     std::vector<std::vector<Neuron>> neuronLayers;
 };
-#endif

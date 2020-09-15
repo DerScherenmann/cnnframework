@@ -23,7 +23,7 @@ public:
     ActivationLayer(size_t width,size_t height,size_t depth,size_t functiontype) : Layer(width,height,depth,Layer::types::ACT), typeFunction(functiontype){
 
     };
-    ActivationLayer(const ActivationLayer& orig) : Layer(orig) {};
+    //ActivationLayer(const ActivationLayer& orig) : Layer(orig) {};
     virtual ~ActivationLayer(){};
 
     size_t calculate(std::vector<std::vector<float>> &inputValues);
