@@ -34,24 +34,28 @@ public:
         INPUT = 0,CONV,POOL,ACT,CONNECTED,OUTPUT
     };
 
-    size_t get_width(){
+    virtual size_t get_width(){
         return m_width;
     }
-    size_t get_height(){
+    virtual size_t get_height(){
         return m_height;
     }
-    size_t get_depth(){
+    virtual size_t get_depth(){
         return m_depth;
     }
-    std::vector<std::vector<float>> get_values(){
+    virtual size_t get_padding(){
+        return m_zero_padding;
+    }
+    virtual size_t get_type(){
+        return m_type;
+    }
+
+    virtual std::vector<std::vector<float>> get_values(){
         return m_values;
     }
-    size_t set_values(std::vector<std::vector<float>> t_input_values){
+    virtual size_t set_values(std::vector<std::vector<float>> &t_input_values){
         m_values = t_input_values;
         return 0;
-    }
-    size_t get_padding(){
-        return m_zero_padding;
     }
 protected:
     //outer vector width inner height

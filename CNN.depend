@@ -5,7 +5,7 @@
 1599839090 /home/broesel233/programming/cpp_projects/CNN/ActivationLayer.h
 	"layer.h"
 
-1600196511 /home/broesel233/programming/cpp_projects/CNN/layer.h
+1600448736 /home/broesel233/programming/cpp_projects/CNN/layer.h
 	"knn/mathhelper.h"
 
 1600196820 /home/broesel233/programming/cpp_projects/CNN/lib/knn/mathhelper.h
@@ -13,23 +13,29 @@
 	<random>
 	<vector>
 
-1600196682 source:/home/broesel233/programming/cpp_projects/CNN/convnetwork.cpp
+1600448760 source:/home/broesel233/programming/cpp_projects/CNN/convnetwork.cpp
 	<vector>
 	<string>
 	<utility>
 	<iostream>
 	<fstream>
+	<thread>
 	"convnetwork.h"
 	"PoolLayer.h"
 	"ConvolutionLayer.h"
 	"ConnectedLayer.h"
 	"filter.h"
 
-1599762109 /home/broesel233/programming/cpp_projects/CNN/convnetwork.h
+1600448682 /home/broesel233/programming/cpp_projects/CNN/convnetwork.h
 	<vector>
 	<string>
 	<algorithm>
 	"filter.h"
+	"layer.h"
+	"ConvolutionLayer.h"
+	"PoolLayer.h"
+	"ActivationLayer.h"
+	"ConnectedLayer.h"
 
 1600196539 /home/broesel233/programming/cpp_projects/CNN/filter.h
 	"knn/mathhelper.h"
@@ -56,12 +62,12 @@
 1599762109 source:/home/broesel233/programming/cpp_projects/CNN/layer.cpp
 	"layer.h"
 
-1599315442 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/mathhelper.cpp
+1600196274 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/mathhelper.cpp
 	"mathhelper.h"
 	<random>
 	<vector>
 
-1600001715 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/network.cpp
+1600273668 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/network.cpp
 	<algorithm>
 	"mathhelper.h"
 	"network.h"
@@ -74,7 +80,7 @@
 	<utility>
 	<chrono>
 
-1600196806 /home/broesel233/programming/cpp_projects/CNN/lib/knn/network.h
+1600273673 /home/broesel233/programming/cpp_projects/CNN/lib/knn/network.h
 	<vector>
 	<map>
 	<string>
@@ -94,13 +100,12 @@
 	<iostream>
 	"neuron.h"
 
-1599672034 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/neuron.cpp
+1600196030 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/neuron.cpp
 	<vector>
 	<iostream>
-	"mathhelper.h"
 	"neuron.h"
 
-1600002033 source:/home/broesel233/programming/cpp_projects/CNN/main.cpp
+1600441576 source:/home/broesel233/programming/cpp_projects/CNN/main.cpp
 	<iostream>
 	"convnetwork.h"
 
@@ -121,7 +126,7 @@
 1599762109 source:/home/broesel233/programming/cpp_projects/CNN/ConnectedLayer.cpp
 	"ConnectedLayer.h"
 
-1600196712 /home/broesel233/programming/cpp_projects/CNN/ConnectedLayer.h
+1600273856 /home/broesel233/programming/cpp_projects/CNN/ConnectedLayer.h
 	<utility>
 	"layer.h"
 	"knn/network.h"

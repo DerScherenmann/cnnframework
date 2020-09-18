@@ -11,15 +11,18 @@ public:
     /*
      * Constructor
      */
+    /**
+    * @param layersize layermfunction
+    */
     Network(std::vector<std::pair<int,int>> sizes);
 
     /*
      *  Functions
      */
     int train(std::vector<std::pair<std::vector<float>, std::vector<float>>> &trainingData, float learningRate, float momentum, int epochs);
+    std::vector<float> train_once(std::pair<std::vector<float>, std::vector<float>> &pair,float learningRate,float momentum);
     std::vector<float> predict(std::vector<float>& testData);
     int highestPred(std::vector<float> &outputNeurons);
-    std::vector<Neuron> feedForward(std::vector<float>& testData);
     int save(std::string filename);
     int load(std::string filename);
 
@@ -36,6 +39,7 @@ private:
     /*
      *  Functions
      */
+    std::vector<Neuron> feedForward(std::vector<float>& testData);
     float backProp(float &delta, float &activation);
     float backPropMomentum(float &deltaCurrent, float &activationBefore, float &oldChange);
     float calcMSE(std::vector<std::pair<std::vector<float>, std::vector<float>>> &trainingData, std::vector<std::vector<Neuron>> &outputNeurons);

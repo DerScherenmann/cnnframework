@@ -226,7 +226,7 @@ int Network::train(std::vector<std::pair<std::vector<float>, std::vector<float>>
 		if (error < 0.09) break;
 	}
 
-	std::cout << "Average time for one epoch: " << averageTimeEpoch/100 << std::endl;
+	std::cout << "Average time for one epoch: " << averageTimeEpoch / 100 << std::endl;
 	std::cout << "One training data step: " << averageTimeEpoch / 100 / 10000 << std::endl;
 
         //zero old changes
@@ -245,13 +245,13 @@ int Network::train(std::vector<std::pair<std::vector<float>, std::vector<float>>
 std::vector<Neuron> Network::feedForward(std::vector<float> &testData) {
 
 	//apply testData to Input Layer
-	for (int i = 0; i < neuronLayers[0].size(); i++) {
+	for (size_t i = 0; i < neuronLayers[0].size(); i++) {
             if(neuronLayers[0][i].type == Neuron::NEURON)
                 neuronLayers[0][i].activation = testData[i];
 	}
 
-	for (int i = 1; i < neuronLayers.size(); i++) {
-            for (int j = 0; j < neuronLayers[i].size(); j++) {
+	for (size_t i = 1; i < neuronLayers.size(); i++) {
+            for (size_t j = 0; j < neuronLayers[i].size(); j++) {
 		if (neuronLayers[i][j].type == Neuron::NEURON)
 			neuronLayers[i][j].calculateActivation(neuronLayers[i - 1], weights[i - 1][j]);
             }
@@ -312,8 +312,8 @@ float Network::calcMSE(std::vector<std::pair<std::vector<float>, std::vector<flo
 	//mean sqared error = ((ideal1-output1)^2+(...)+(idealn-outputn)^2)/n
 	//both vectors are for example 10 big so we can calculate an error. Ideals must be filles up with ideals for all neurons
 	//for example ideals: {1,0,0,0,0,0,0,0,0,0} output: {0.9,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1}
-	for (int i = 0; i < ideals.size(); i++) {
-		for (int j = 0; j < ideals[i].size(); j++) {
+	for (size_t i = 0; i < ideals.size(); i++) {
+		for (size_t j = 0; j < ideals[i].size(); j++) {
 			error += pow((ideals[i][j] - outputNeurons[i][j].activation), 2);
 		}
 	}
@@ -339,8 +339,8 @@ float Network::calcRMSE(std::vector<std::pair<std::vector<float>, std::vector<fl
 	//mean sqared error = ((ideal1-output1)^2+(...)+(idealn-outputn)^2)/n
 	//both vectors are for example 10 big so we can calculate an error. Ideals must be filles up with ideals for all neurons
 	//for example ideals: {1,0,0,0,0,0,0,0,0,0} output: {0.9,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1}
-	for (int i = 0; i < ideals.size(); i++) {
-		for (int j = 0; j < ideals[i].size(); j++) {
+	for (size_t i = 0; i < ideals.size(); i++) {
+		for (size_t j = 0; j < ideals[i].size(); j++) {
 			error += pow((ideals[i][j] - outputNeurons[i][j].activation), 2);
 		}
 	}
@@ -504,3 +504,76 @@ int Network::load(std::string filename) {
         std::cout << "Check: " << weights[0][0][0] << std::endl;
     return 0;
 }
+
+/**
+ * As for use as API in cnn networks
+ * Only backpropagates once
+ * @param training data
+ * @param learning rate
+ * @param momentum
+ * @return vector containing deltas of neurons
+ */
+std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector<float>> &pair,float learningRate,float momentum) {
+
+    //returned deltas of input layer
+    std::vector<float> deltas;
+
+    //TODO improve performance of forward propagation
+    //also set activations
+    std::vector<Neuron> output = feedForward(pair.first);
+
+    //secondly we need to calculate delta for each neuron in the network (except input neurons), we are starting from behind
+    //WARNING: changed to calculate input neurons as well as of implementation into CNN
+    for (size_t i = neuronLayers.size() - 1; i > 0; i--) {
+        //neuronLayers[i].size()-1 because we dont want to calculate for the bias
+        for (size_t j = 0; j <= neuronLayers[i].size() - 1; j++) {
+            //the output layer uses a different function
+            if (i == neuronLayers.size() - 1) {
+                //delta = f'(sum) * (o - t)
+                neuronLayers[i][j].delta = neuronLayers[i][j].actPrime(neuronLayers[i][j].sum) * (neuronLayers[i][j].activation - pair.second[j]);
+            }
+            else {
+                float sum = 0;
+                //neuronLayers[i+1][k].delta <- delta from layer before -1 bc we dont want to calculate for the bias
+                for (size_t k = 0; k < neuronLayers[i+1].size(); k++) {
+                    if(neuronLayers[i + 1][k].type == Neuron::NEURON)
+                        sum += neuronLayers[i+1][k].delta * weights[i][k][j];
+                }
+                //delta = f'(sum)*sum(prevDeltas*weights)
+                neuronLayers[i][j].delta = neuronLayers[i][j].actPrime(neuronLayers[i][j].sum) * sum;
+                if(i == 0){
+                    deltas.push_back(neuronLayers[i][j].delta);
+                }
+            }
+        }
+    }
+
+    //std::vector<std::future<void>> threads;
+    //threads.reserve(neuronLayers.size());
+
+    //this is ineffective
+    //auto calculateChange = std::async([=] {
+
+    //we now can calculate the weights
+    for (size_t i = 1; i < neuronLayers.size(); i++) {
+        for (size_t j = 0; j < neuronLayers[i].size() - 1; j++) {
+            for (size_t k = 0; k < neuronLayers[i - 1].size(); k++) {
+                //without momentum
+                //float change = backProp(neuronLayers[i][j].delta, neuronLayers[i - 1][k].activation);
+
+                //with momentum
+                float change = -1 * backPropMomentum(neuronLayers[i][j].delta, neuronLayers[i - 1][k].activation, oldchange[i - 1][j][k]);
+                //apply weight change
+                oldchange[i - 1][j][k] = change;
+                weights[i - 1][j][k] += change;
+            }
+        }
+    }
+
+    //});
+    //threads.push_back(std::move(calculateChange));
+
+    //for (std::future<void> &thread : threads) thread.get();
+
+    return deltas;
+ }

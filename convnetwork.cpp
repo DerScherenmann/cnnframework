@@ -8,6 +8,7 @@
 #include <utility>
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 #include "convnetwork.h"
 #include "PoolLayer.h"
@@ -22,16 +23,42 @@ std::vector<std::vector<float>> testimages;
 uchar* testlabels;
 size_t readStuff(size_t number_of_images,size_t number_of_labels);
 
-size_t Convultional::train(std::vector<std::pair<std::vector<float>, std::vector<float>>> &training_data,float learning_rate,float momentum, size_t epochs){
+size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>>, std::vector<float>>> &t_training_data,float t_learning_rate,float t_momentum, size_t t_epochs){
 
-    for(size_t epoch = 0;epoch < epochs;epoch++){
-
+    //train for epoch amount
+    for(size_t epoch = 0;epoch < t_epochs;epoch++){
+        //go through batch
+        for(std::pair<std::vector<std::vector<float>>, std::vector<float>> &data:t_training_data){
+            //feed forward
+            std::vector<float> outputs = feed_forward(data);
+        }
     }
 
     return 0;
 }
 
-size_t Convultional::test(){
+std::vector<float> Convolutional::feed_forward(std::pair<std::vector<std::vector<float>>, std::vector<float>> &t_data){
+    std::vector<float> outputs;
+    std::vector<std::thread> forward_threads;
+
+    //go through each "slice" of the cnn example: input, conv conv , pool , output
+    for(size_t i = 0;i < m_layers.size();i++){
+        //TODO multithreading till connected layer?
+        for(size_t j = 0;j < m_layers[i].size();j++){
+            if(i == 0){
+                //set input values
+                m_layers[i][j]->set_values(t_data.first);
+            }else{
+                //forward values
+
+            }
+        }
+    }
+
+    return outputs;
+}
+
+size_t Convolutional::run_tests(){
 
     std::vector<std::vector<ConvolutionLayer>> architecture;
     std::vector<PoolLayer> last_layers;
@@ -179,7 +206,6 @@ size_t Convultional::test(){
     std::vector<float> connected_inputs;
 
     for(PoolLayer pool:last_layers){
-
         //make all pool outputs to a 1d vector
         for(size_t i = 0;i<pool.get_values().size();i++){
             for(size_t j = 0;j < pool.get_values()[0].size();j++){
@@ -187,12 +213,34 @@ size_t Convultional::test(){
             }
         }
     }
+    //superclass layer takes 2d inputs, we only need 1d input
     std::vector<std::vector<float>> dim;
     dim.push_back(connected_inputs);
 
-    std::vector<std::pair<int,int>> sizes;
-    ConnectedLayer connected = ConnectedLayer(ConnectedLayer::functiontype::SWISH,sizes);
-    connected.set_values(dim);
+    //add neurons manually
+    std::vector<size_t> sizes;
+    sizes.push_back(dim.size());
+    sizes.push_back(30);
+    sizes.push_back(20);
+    sizes.push_back(10);
+
+    //test raw and normalized output
+    for(size_t i = 0;i < 2;i++){
+        if(i == 0){
+            std::cout << "Raw Output: " << std::endl;
+        }else{
+            std::cout << "Normalized Output: " << std::endl;
+        }
+        ConnectedLayer connected = ConnectedLayer(ConnectedLayer::functiontype::SWISH,sizes,i);
+        connected.set_values(dim);
+        connected.forward();
+        std::vector<float> outputs = connected.get_net_output();
+        for(size_t j = 0;j < outputs.size();j++){
+            std::cout << j << ":" << outputs[j] << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
 
     std::cout << std::endl << std::endl;
 

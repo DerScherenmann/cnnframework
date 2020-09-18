@@ -45,36 +45,34 @@
 		<Unit filename="ConvolutionLayer.h" />
 		<Unit filename="PoolLayer.cpp" />
 		<Unit filename="PoolLayer.h" />
-		<Unit filename="README.md" />
+		<Unit filename="README.md">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="convnetwork.cpp" />
 		<Unit filename="convnetwork.h" />
 		<Unit filename="filter.cpp" />
 		<Unit filename="filter.h" />
 		<Unit filename="layer.cpp" />
 		<Unit filename="layer.h" />
-		<Unit filename="lib/knn/mathhelper.cpp">
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="lib/knn/mathhelper.h">
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="lib/knn/network.cpp">
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="lib/knn/network.h">
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="lib/knn/neuron.cpp">
-			<Option target="Release" />
-		</Unit>
-		<Unit filename="lib/knn/neuron.h">
-			<Option target="Release" />
-		</Unit>
+		<Unit filename="lib/knn/mathhelper.cpp" />
+		<Unit filename="lib/knn/mathhelper.h" />
+		<Unit filename="lib/knn/network.cpp" />
+		<Unit filename="lib/knn/network.h" />
+		<Unit filename="lib/knn/neuron.cpp" />
+		<Unit filename="lib/knn/neuron.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="t10k-images.idx3-ubyte" />
-		<Unit filename="t10k-labels.idx1-ubyte" />
-		<Unit filename="train-images.idx3-ubyte" />
-		<Unit filename="train-labels.idx1-ubyte" />
+		<Unit filename="t10k-images.idx3-ubyte">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="t10k-labels.idx1-ubyte">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="train-images.idx3-ubyte">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="train-labels.idx1-ubyte">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

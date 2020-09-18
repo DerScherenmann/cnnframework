@@ -20,9 +20,9 @@
  */
 int main(int argc, char** argv) {
 
-    Convultional conv = Convultional({28,28,1},5,1,5);
+    Convolutional conv = Convolutional({28,28,1},{10,1},{1,2},1,5,2);
     while(getchar() != 0){
-        conv.test();
+        conv.run_tests();
     }
 
     return 0;
