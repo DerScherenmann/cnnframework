@@ -21,36 +21,90 @@ std::vector<std::vector<float>> images;
 uchar* labels;
 std::vector<std::vector<float>> testimages;
 uchar* testlabels;
-size_t readStuff(size_t number_of_images,size_t number_of_labels);
+size_t read_stuff(size_t number_of_images_open,size_t number_of_labels_open);
 
-size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>>, std::vector<float>>> &t_training_data,float t_learning_rate,float t_momentum, size_t t_epochs){
+size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>>, std::vector<float>>> &t_training_data,size_t t_funcion_type,float t_learning_rate,float t_momentum, size_t t_epochs, size_t t_stride_filters,size_t t_stride_pools) {
+    m_stride_pool = t_stride_pools;
+    m_stride_filters = t_stride_filters;
+    m_epochs = t_epochs;
+    m_learning_rate = t_learning_rate;
+    m_momentum = t_momentum;
+    m_function_type = t_funcion_type;
+
+    //initialize layers
+    std::vector<float> outputs = feed_forward_first(t_training_data[0]);
 
     //train for epoch amount
     for(size_t epoch = 0;epoch < t_epochs;epoch++){
         //go through batch
         for(std::pair<std::vector<std::vector<float>>, std::vector<float>> &data:t_training_data){
             //feed forward
-            std::vector<float> outputs = feed_forward(data);
+
         }
     }
 
     return 0;
 }
 
-std::vector<float> Convolutional::feed_forward(std::pair<std::vector<std::vector<float>>, std::vector<float>> &t_data){
+std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::vector<float>>, std::vector<float>> &t_data){
     std::vector<float> outputs;
     std::vector<std::thread> forward_threads;
 
-    //go through each "slice" of the cnn example: input, conv conv , pool , output
+    //TODO only initialize layers the first feed forward iteration
+    //go through each "slice" of the cnn example: input, conv conv , pool pool , output
     for(size_t i = 0;i < m_layers.size();i++){
         //TODO multithreading till connected layer?
         for(size_t j = 0;j < m_layers[i].size();j++){
             if(i == 0){
                 //set input values
-                m_layers[i][j]->set_values(t_data.first);
+                Layer* layer = new Layer(t_data.first.size(),t_data.first[0].size(),1,Layer::INPUT);
+                layer->set_values(t_data.first);
+                m_layers[i][j] = layer;
             }else{
                 //forward values
+                std::vector<std::vector<float>> values = m_layers[i-1][j]->get_values();
+                if(m_test){
+                    std::cout << "Size: i = " << i << ": " << m_layers[i].size() << std::endl;
+                    std::cout << "Layertype: " << m_layers[i][j]->get_type() << std::endl;
+                    std::cout << "Layertype before: " << m_layers[i-1][j]->get_type() << std::endl;
+                    std::cout << "Size Values before: " << values.size() << "x" << values[0].size() << std::endl;
+                }
 
+                switch(m_layers[i][j]->get_type()){
+                    case Layer::CONV:{
+                        ConvolutionLayer* conv_layer = new ConvolutionLayer(t_data.first.size(),t_data.first[0].size(),1,m_zero_padding,m_stride_filters,m_num_filters,m_filters_size);
+                        conv_layer->set_values(t_data.first);
+                        conv_layer->make_padding();
+                        std::cout << conv_layer->get_values().size() << std::endl;
+                        std::cout << conv_layer->get_values()[0].size() << std::endl;
+                        m_layers[i][j] = conv_layer;
+                        break;
+                    }
+                    case Layer::POOL:{
+                        //push back as much as we need if prev layer is conv layer
+                        PoolLayer* pool_layer = new PoolLayer(values.size(),values[0].size(),1,m_stride_pool);
+                        pool_layer->pool(values);
+                        m_layers[i][j] = pool_layer;
+                        break;
+                    }
+                    case Layer::ACT:{
+                        //see pool case
+                        ActivationLayer* act_layer = new ActivationLayer(values.size(),values[0].size(),1,m_function_type);
+                        act_layer->calculate(values);
+                        m_layers[i][j] = act_layer;
+                        break;
+                    }
+                    case Layer::CONNECTED:{
+                        ConnectedLayer* conn_layer = new ConnectedLayer(m_function_type,{values.size()*m_layers[i].size(),30,10},true);
+                        conn_layer->forward();
+                        m_layers[i][j] = conn_layer;
+                    }
+                }
+            }
+            //if last layer is reached
+            if(i == m_layers.size()-1){
+                std::vector<float> outputs_layers = m_layers[i][j]->get_net_output();
+                outputs.insert(outputs.end(),outputs_layers.begin(),outputs_layers.end());
             }
         }
     }
@@ -60,25 +114,24 @@ std::vector<float> Convolutional::feed_forward(std::pair<std::vector<std::vector
 
 size_t Convolutional::run_tests(){
 
+    m_test = true;
+
     std::vector<std::vector<ConvolutionLayer>> architecture;
     std::vector<PoolLayer> last_layers;
 
     /*
-    read_stuff(1,1);
-    std::vector<std::vector<float>> values;
-    values.resize(28);
-    for(size_t i = 0;i < 28;i++){
-        values[i].resize(28);
-       for(size_t j = 0;j < 28;j++){
-           values[i][j] = images[0][i*j];
-        }
-    }
-    */
-    /*
      * Generate sample input
      */
-    size_t input_size = 6;
-    size_t depth = 3;
+    size_t input_size = 4;
+    size_t depth = 1;
+
+    size_t filter_size = 2;
+    size_t filter_stride = 1;
+    size_t num_filters = 2;
+
+    size_t pool_size = 2;
+    size_t pool_stride = 2;
+
     //simulate rgb channel
     std::vector<std::vector<std::vector<float>>> inputs;
     inputs.resize(depth);
@@ -105,7 +158,7 @@ size_t Convolutional::run_tests(){
     std::vector<ConvolutionLayer> conv_layers;
     for(size_t i = 0;i < inputs.size();i++){
 
-        ConvolutionLayer conv = ConvolutionLayer(input_size,input_size,1,1,1,5,2);
+        ConvolutionLayer conv = ConvolutionLayer(input_size,input_size,1,1,filter_stride,num_filters,filter_size);
         conv.set_values(inputs[i]);
         conv.make_padding();
         conv_layers.push_back(conv);
@@ -116,8 +169,6 @@ size_t Convolutional::run_tests(){
             }
             std::cout << std::endl;
         }
-        //add filters
-
         std::cout << std::endl;
         std::cout << std::endl;
     }
@@ -134,12 +185,13 @@ size_t Convolutional::run_tests(){
 
         for(size_t j = 0;j < architecture[i].size();j++) {
             std::vector<Filter> filters = architecture[i][j].get_filters();
-            std::cout << "Filters: " << filters.size() << std::endl;
+            std::cout << "Filters: " << filters.size() << std::endl << std::endl;
             if(filters.size() == 0){
                 break;
             }
             for(Filter filter:filters){
                 Layer output = filter.calculate_output(architecture[i][j]);
+                std::cout << output.get_values().size() << "x" << output.get_values()[0].size() << std::endl;
                 for(size_t width = 0;width < output.get_values().size();width++){
                     for(size_t height = 0;height < output.get_values()[0].size();height++){
                         std::cout << output.get_values()[width][height] << " ";
@@ -170,7 +222,7 @@ size_t Convolutional::run_tests(){
             for(Filter filter:filters){
                 Layer output = filter.calculate_output(architecture[i][j]);
 
-                PoolLayer pool = PoolLayer(2,2,1,2);
+                PoolLayer pool = PoolLayer(pool_size,pool_size,1,pool_stride);
                 pool.pool(output.get_values());
 
                 std::cout << std::endl;
@@ -241,13 +293,58 @@ size_t Convolutional::run_tests(){
         std::cout << std::endl;
     }
 
-
     std::cout << std::endl << std::endl;
+
+    /*
+     * Test training
+     */
+    std::cout << "Tesing training: " << std::endl;
+    read_stuff(10,10);
+    std::vector<std::pair<std::vector<std::vector<float>>, std::vector<float>>> test_data;
+    for(int i = 0;i < images.size();i++){
+        //make image vectors
+        std::vector<std::vector<float>> values;
+        values.resize(28);
+        for(size_t j = 0;j < 28;j++){
+            values[j].resize(28);
+            for(size_t k = 0;k < 28;k++){
+                values[j][k] = images[i][j*k] / 255;
+            }
+        }
+
+        //make label vectors
+        std::vector<float> temp;
+        temp.resize(10);
+        for (int j = 0; j < 10; j++) {
+            if (labels[i] == j) {
+                temp[j] = 1;
+            }
+            else {
+                temp[j] = 0;
+            }
+        }
+        test_data.push_back(std::make_pair(values,temp));
+    }
+    std::cout << "Architecture: " << std::endl;
+    for(size_t i = 0;i < m_layers.size();i++){
+        for(size_t j = 0;j < m_layers[i].size();j++){
+            std::cout << "Type: " << m_layers[i][j]->get_type() << " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    this->train(test_data,SWISH,0.02,0.05,100,1,2);
+
+    m_test = false;
 
     return 0;
 }
 
-size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
+
+
+
+
+size_t read_stuff(size_t number_of_images_open,size_t number_of_labels_open) {
 
     Math math;
 
@@ -258,10 +355,10 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
     if (file.is_open())
     {
         std::cout << "Opening images..." << std::endl;
-        size_t magic_number = 0;
-        size_t number_of_images = 0;
-        size_t n_rows = 0;
-        size_t n_cols = 0;
+        int magic_number = 0;
+        int number_of_images = 0;
+        int n_rows = 0;
+        int n_cols = 0;
         file.read((char*)&magic_number, sizeof(magic_number));
         magic_number = math.reverseInt(magic_number);
         file.read((char*)&number_of_images, sizeof(number_of_images));
@@ -272,8 +369,8 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
         n_cols = math.reverseInt(n_cols);
         //std::thread imageThread = std::thread([number_of_images,n_rows,n_cols,file,images] {
         std::vector<float> test;
-        images.reserve(number_of_images);
-        for (size_t i = 0; i < number_of_images; ++i)
+        images.reserve(number_of_images_open);
+        for (size_t i = 0; i < number_of_images_open; ++i)
         {
             test.reserve(784);
             for (size_t r = 0; r < n_rows; ++r)
@@ -298,7 +395,8 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
     if (file.is_open()) {
 
         std::cout << "Opening labels..." << std::endl;
-        size_t magic_number = 0;
+        int magic_number = 0;
+        int number_of_labels;
         file.read((char*)&magic_number, sizeof(magic_number));
         magic_number = math.reverseInt(magic_number);
 
@@ -306,8 +404,8 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
 
         file.read((char*)&number_of_labels, sizeof(number_of_labels)), number_of_labels = math.reverseInt(number_of_labels);
 
-        uchar* _dataset = new uchar[number_of_labels];
-        for (size_t i = 0; i < number_of_labels; i++) {
+        uchar* _dataset = new uchar[number_of_labels_open];
+        for (size_t i = 0; i < number_of_labels_open; i++) {
             file.read((char*)&_dataset[i], 1);
         }
         labels = _dataset;
@@ -320,10 +418,10 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
     if (file.is_open())
     {
         std::cout << "Opening testing images..." << std::endl;
-        size_t magic_number = 0;
-        size_t number_of_images = 0;
-        size_t n_rows = 0;
-        size_t n_cols = 0;
+        int magic_number = 0;
+        int number_of_images = 0;
+        int n_rows = 0;
+        int n_cols = 0;
         file.read((char*)&magic_number, sizeof(magic_number));
         magic_number = math.reverseInt(magic_number);
         file.read((char*)&number_of_images, sizeof(number_of_images));
@@ -359,7 +457,8 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
     if (file.is_open()) {
 
         std::cout << "Opening test labels..." << std::endl;
-        size_t magic_number = 0;
+        int magic_number = 0;
+        int number_of_labels;
         file.read((char*)&magic_number, sizeof(magic_number));
         magic_number = math.reverseInt(magic_number);
 
@@ -373,6 +472,7 @@ size_t read_stuff(size_t number_of_images,size_t number_of_labels) {
         }
         testlabels = _dataset;
     }
+    std::cout << std::endl;
 
     return 0;
 }

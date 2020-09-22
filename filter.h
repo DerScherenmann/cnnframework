@@ -43,29 +43,32 @@ public:
     }
 
     Layer calculate_output(Layer& t_input_layer){
-        size_t output_width = (t_input_layer.get_width()-m_width+2*t_input_layer.get_padding())/m_stride +2;
+
+        size_t output_width = (t_input_layer.get_width()-m_width+2*t_input_layer.get_padding())/m_stride+2;
         size_t output_height = output_width;
 
+        size_t start = 1;
+
         std::vector<std::vector<float>> output_values;
-        for(size_t width = 1;width < t_input_layer.get_width()-1;width+=m_stride){
+        for(size_t width_input = start;width_input < t_input_layer.get_width();width_input+=m_stride){
             std::vector<float> output_column;
-            for(size_t height = 1;height < t_input_layer.get_height()-1;height+=m_stride){
+            for(size_t height_input = start;height_input < t_input_layer.get_height();height_input+=m_stride){
                 float output = 0;
                 for(size_t i = 0;i < m_width;i++){
                     float inner_sum = 0;
-                    if(width == t_input_layer.get_width()-2){
+                    if(width_input == t_input_layer.get_width()-1){
                         for(size_t j = 0;j < m_height;j++){
-                            inner_sum += t_input_layer.get_values()[width-i+1][height-j] * m_values[i][j];
+                            inner_sum += t_input_layer.get_values()[width_input-i+1][height_input-j] * m_values[i][j];
                         }
                     }
-                    if(width == t_input_layer.get_height()-2){
+                    if(width_input == t_input_layer.get_height()-1){
                         for(size_t j = 0;j < m_height;j++){
-                            inner_sum += t_input_layer.get_values()[width-i][height-j+1] * m_values[i][j];
+                            inner_sum += t_input_layer.get_values()[width_input-i][height_input-j+1] * m_values[i][j];
                         }
                     }
                     else{
                         for(size_t j = 0;j < m_height;j++){
-                            inner_sum += t_input_layer.get_values()[width-i][height-j] * m_values[i][j];
+                            inner_sum += t_input_layer.get_values()[width_input-i/2][height_input-j/2] * m_values[i][j];
                         }
                     }
                     output += inner_sum;

@@ -22,7 +22,8 @@
 
 class PoolLayer : public Layer {
 public:
-    //TODO add depth
+
+    PoolLayer(){};
     PoolLayer(size_t t_width,size_t t_height,size_t t_depth,size_t t_stride) : Layer(t_width,t_height,t_depth,Layer::types::POOL), m_stride(t_stride){};
     //PoolLayer(const PoolLayer& orig) : Layer(orig) {};
     virtual ~PoolLayer(){};
@@ -31,22 +32,23 @@ public:
      * @param input
      * @return
      */
+    //TODO test reference vs normal
     size_t pool(std::vector<std::vector<float>> t_input){
 
         std::vector<std::vector<float>> pane;
         std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> index_pane;
-        for(size_t width = 0;width < t_input.size();width+=m_stride){
+        for(size_t input_width = 0;input_width < t_input.size();input_width+=m_stride){
             std::vector<float> column;
             std::vector<std::pair<float, std::pair<size_t,size_t>>> index_column;
-            for(size_t height = 0;height < t_input.size();height+=m_stride){
+            for(size_t input_height = 0;input_height < t_input.size();input_height+=m_stride){
                 //get highest value and add to outputs
                 std::vector<float> values;
                 std::pair<float, std::pair<size_t,size_t>> index;
                 for(size_t x = 0;x < m_width;x++){
                     for(size_t y = 0;y < m_height;y++){
-                        values.push_back(t_input[width+x][height+y]);
-                        index.first = t_input[width+x][height+y];
-                        index.second = std::make_pair(width+x,height+y);
+                        values.push_back(t_input[input_width+x][input_height+y]);
+                        index.first = t_input[input_width+x][input_height+y];
+                        index.second = std::make_pair(input_width+x,input_height+y);
                     }
                 }
                 std::sort(values.begin(),values.end(),std::greater<float>());
@@ -63,6 +65,9 @@ public:
     }
     std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> get_org_index(){
         return m_output_prev_index;
+    }
+    size_t get_type(){
+        return Layer::POOL;
     }
 private:
     //TODO LMAO <- also this works

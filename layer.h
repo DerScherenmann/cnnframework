@@ -18,6 +18,7 @@
 
 class Layer {
 public:
+    Layer(){};
     Layer(size_t t_width,size_t t_height,size_t t_depth,size_t t_type) : m_width(t_width), m_height(t_height),m_depth(t_depth), m_type(t_type) {
         m_values.resize(m_width);
         for(size_t i = 0;i<m_width;i++){
@@ -49,14 +50,16 @@ public:
     virtual size_t get_type(){
         return m_type;
     }
-
     virtual std::vector<std::vector<float>> get_values(){
         return m_values;
     }
-    virtual size_t set_values(std::vector<std::vector<float>> &t_input_values){
+    virtual size_t set_values(std::vector<std::vector<float>> t_input_values){
         m_values = t_input_values;
         return 0;
     }
+
+    //declare some virtual functions for base classes to avoid dynamic casting
+    virtual std::vector<float> get_net_output(){};
 protected:
     //outer vector width inner height
     std::vector<std::vector<float>> m_values;

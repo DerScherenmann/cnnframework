@@ -20,7 +20,7 @@
  */
 int main(int argc, char** argv) {
 
-    Convolutional conv = Convolutional({28,28,1},{10,1},{1,2},1,5,2);
+    Convolutional conv = Convolutional({28,28,1},{10,1},{1,2},1,5,4,2,1);
     while(getchar() != 0){
         conv.run_tests();
     }

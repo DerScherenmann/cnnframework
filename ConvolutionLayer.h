@@ -25,6 +25,7 @@ public:
     /**
      *
      */
+    ConvolutionLayer(){};
     ConvolutionLayer(size_t t_height,size_t t_width,size_t t_depth,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes) :
                         Layer(t_height,t_width,t_depth,Layer::types::CONV), m_num_filters(t_num_filters), m_filter_sizes(t_filter_sizes), m_stride(t_stride) {
 
@@ -50,19 +51,23 @@ public:
      */
     size_t make_padding(){
 
-        m_width = (m_values.size()-m_filter_sizes+2*m_zero_padding)/m_stride +2;
+        //this is not needed here ?
+        //m_width = (m_values.size()-m_filter_sizes+2*m_zero_padding)/m_stride +2;
+        m_width = m_values.size()+m_zero_padding;
         m_height = m_width;
         m_depth = m_num_filters;
 
         if(m_zero_padding != 0){
             for(size_t i = 0;i < m_zero_padding;i++){
+                //insert padding row values
                 for(size_t width = 0;width < m_values.size();width++){
                     m_values[width].insert(m_values[width].begin(),0);
                     m_values[width].push_back(0);
                 }
+                //make padding column
                 std::vector<float> padding_column;
                 padding_column.reserve(m_height);
-                for(size_t height = 0;height < m_height;height++){
+                for(size_t height = 0;height < m_height+1;height++){
                     padding_column.push_back(0);
                 }
                 m_values.insert(m_values.begin(),padding_column);
@@ -73,7 +78,9 @@ public:
 
         return 0;
     }
-
+    size_t get_type(){
+        return Layer::CONV;
+    }
 private:
     size_t m_num_filters;
     size_t m_filter_sizes;

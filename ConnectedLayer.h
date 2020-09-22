@@ -21,6 +21,7 @@
 
 class ConnectedLayer : public Layer{
 public:
+    ConnectedLayer(){};
     ConnectedLayer(size_t t_functiontype, std::vector<size_t> t_sizes, bool t_raw_output) : Layer(m_width,m_height,m_depth,Layer::types::CONNECTED), m_functiontype(t_functiontype){
         std::vector<std::pair<int,int>> net_sizes;
         for(size_t layer_size:t_sizes){
@@ -50,6 +51,9 @@ public:
     };
     std::vector<float> get_net_output(){
         return m_net_output;
+    }
+    size_t get_type(){
+        return Layer::CONNECTED;
     }
 private:
     size_t m_functiontype;
