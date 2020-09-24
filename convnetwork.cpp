@@ -32,13 +32,19 @@ size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>
     m_function_type = t_funcion_type;
 
     //initialize layers
-    std::vector<float> outputs = feed_forward_first(t_training_data[0]);
+    feed_forward_first(t_training_data[0]);
+
+    std::vector<std::vector<float>> all_outputs;
 
     //train for epoch amount
     for(size_t epoch = 0;epoch < t_epochs;epoch++){
         //go through batch
         for(std::pair<std::vector<std::vector<float>>, std::vector<float>> &data:t_training_data){
             //feed forward
+            //TODO other feed_forward function
+            std::vector<float> outputs = feed_forward_first(data);
+
+            all_outputs.push_back(outputs);
 
         }
     }
@@ -67,21 +73,26 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                 size_t layer_type = m_layers[i][j]->get_type();
 
                 //forward values
-                std::vector<std::vector<float>> values = m_layers[i-1][j]->get_values();
-                if(m_test){
-                    std::cout << "Size: i = " << i << ": " << m_layers[i].size() << std::endl;
-                    std::cout << "Layertype: " << m_layers[i][j]->get_type() << std::endl;
-                    std::cout << "Layertype before: " << m_layers[i-1][j]->get_type() << std::endl;
-                    std::cout << "Size Values before: " << values.size() << "x" << values[0].size() << std::endl;
+                std::vector<std::vector<float>> values;
+
+                if(m_layers[i-1][0]->get_type() == Layer::CONV){
+                    values = m_layers[i-1][j/m_num_filters]->get_values();
+                }else{
+                    values = m_layers[i-1][j]->get_values();
                 }
+
+//                if(m_test){
+//                    std::cout << "Size: i = " << i << ": " << m_layers[i].size() << std::endl;
+//                    std::cout << "Layertype: " << m_layers[i][j]->get_type() << std::endl;
+//                    std::cout << "Layertype before: " << m_layers[i-1][0]->get_type() << std::endl;
+//                    std::cout << "Size Values before: " << values.size() << "x" << values[0].size() << std::endl;
+//                }
 
                 switch(layer_type){
                     case Layer::CONV:{
                         ConvolutionLayer* conv_layer = new ConvolutionLayer(t_data.first.size(),t_data.first[0].size(),1,m_zero_padding,m_stride_filters,m_num_filters,m_filters_size);
                         conv_layer->set_values(t_data.first);
                         conv_layer->make_padding();
-                        std::cout << conv_layer->get_values().size() << std::endl;
-                        std::cout << conv_layer->get_values()[0].size() << std::endl;
                         m_layers[i][j] = conv_layer;
                         break;
                     }
@@ -101,7 +112,18 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                         break;
                     }
                     case Layer::CONNECTED:{
-                        ConnectedLayer* conn_layer = new ConnectedLayer(m_function_type,{values.size()*m_layers[i].size(),30,10},true);
+                        for(size_t layer = 0;layer < m_layers[i-1].size();layer++){
+                            std::vector<float> layer_1d;
+                            for(size_t width = 0;width < m_layers[i-1][layer]->get_values().size();width++){
+                                for(size_t height = 0;height < m_layers[i-1][layer]->get_values()[width].size();height++){
+                                    layer_1d.push_back(m_layers[i-1][layer]->get_values()[width][height]);
+                                }
+                            }
+                            //insert all prev values to connected layer
+                            values[0].insert(values[0].begin(),layer_1d.begin(),layer_1d.end());
+                        }
+                        ConnectedLayer* conn_layer = new ConnectedLayer(m_function_type,{values.size(),30,10},true);
+                        conn_layer->set_values(values);
                         conn_layer->forward();
                         m_layers[i][j] = conn_layer;
                     }
@@ -116,6 +138,16 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
     }
 
     return outputs;
+}
+
+//backpropagation with momentum
+float Convolutional::backPropMomentum(float &deltaCurrent, float &activationBefore, float &oldChange) {
+
+	//j -> i
+	//learningrate * deltai * activationj
+	float weightChange = (1-momentum) * learningRate * deltaCurrent * activationBefore + momentum * oldChange;
+
+	return weightChange;
 }
 
 size_t Convolutional::run_tests(){

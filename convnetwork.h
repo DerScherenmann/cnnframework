@@ -96,6 +96,7 @@ public:
     };
 
     size_t train(std::vector<std::pair<std::vector<std::vector<float>>, std::vector<float>>> &t_training_data,size_t t_funcion_type,float t_learning_rate,float t_momentum, size_t t_epochs, size_t t_stride_filters,size_t t_stride_pools);
+    float Convolutional::backPropMomentum(float &deltaCurrent, float &activationBefore, float &oldChange);
     size_t run_tests();
 private:
     size_t m_num_layers;
