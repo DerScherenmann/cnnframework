@@ -61,6 +61,11 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                 layer->set_values(t_data.first);
                 m_layers[i][j] = layer;
             }else{
+                //get previous type, index 0 bc all vertical layer should be the same
+                size_t layer_prev_type = m_layers[i-1][0]->get_type();
+                //get current type
+                size_t layer_type = m_layers[i][j]->get_type();
+
                 //forward values
                 std::vector<std::vector<float>> values = m_layers[i-1][j]->get_values();
                 if(m_test){
@@ -70,7 +75,7 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                     std::cout << "Size Values before: " << values.size() << "x" << values[0].size() << std::endl;
                 }
 
-                switch(m_layers[i][j]->get_type()){
+                switch(layer_type){
                     case Layer::CONV:{
                         ConvolutionLayer* conv_layer = new ConvolutionLayer(t_data.first.size(),t_data.first[0].size(),1,m_zero_padding,m_stride_filters,m_num_filters,m_filters_size);
                         conv_layer->set_values(t_data.first);
@@ -82,7 +87,8 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                     }
                     case Layer::POOL:{
                         //push back as much as we need if prev layer is conv layer
-                        PoolLayer* pool_layer = new PoolLayer(values.size(),values[0].size(),1,m_stride_pool);
+
+                        PoolLayer* pool_layer = new PoolLayer(2,2,1,m_stride_pool);
                         pool_layer->pool(values);
                         m_layers[i][j] = pool_layer;
                         break;
