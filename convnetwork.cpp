@@ -36,15 +36,47 @@ size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>
 
     std::vector<std::vector<float>> all_outputs;
 
+    std::cout << "Starting training..." << std::endl;
+
     //train for epoch amount
     for(size_t epoch = 0;epoch < t_epochs;epoch++){
+        std::cout << "Epoch: " << epoch << std::endl;
         //go through batch
         for(std::pair<std::vector<std::vector<float>>, std::vector<float>> &data:t_training_data){
             //feed forward
             //TODO other feed_forward function
-            std::vector<float> outputs = feed_forward_first(data);
+            std::vector<float> outputs_layers = feed_forward_first(data);
 
-            all_outputs.push_back(outputs);
+            //start backpropagation from last layer (connected)
+            std::vector<float> deltas_before;
+            for(size_t i = m_layers.size()-1;i > 0;i--){
+                //only for adding all outputs together
+                std::vector<float> outputs_connected_layers;
+
+                for(size_t j = 0;j < m_layers[i].size();j++){
+
+                    //last layer(s) is/are always connected layer(s)
+                    if(i == m_layers.size()-1){
+                        std::vector<std::vector<float>> input_net;
+                        input_net.push_back(outputs_layers);
+                        m_layers[i][j]->set_values(input_net);
+                        m_layers[i][j]->forward();
+                        outputs_connected_layers.insert(outputs_connected_layers.begin(),m_layers[i][j]->get_net_output().begin(),m_layers[i][j]->get_net_output().end());
+
+                        //make training pair
+                        std::pair<std::vector<float>,std::vector<float>> training_pair;
+                        //get deltas
+                        deltas_before = m_layers[i][j]->train(training_pair,m_learning_rate,m_momentum);
+                    }else{
+                        //other layers
+                        //we have to do different things for different layers, so 'ol switch case is pretty handy
+                    }
+                }
+                //only add to all outputs if in last layers
+                if(i == m_layers.size()-1){
+                    all_outputs.push_back(outputs_connected_layers);
+                }
+            }
 
         }
     }
@@ -111,6 +143,8 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                         m_layers[i][j] = act_layer;
                         break;
                     }
+                    //this does not work here because the connected layer train function need to be called up there
+                    //just init this layer here
                     case Layer::CONNECTED:{
                         for(size_t layer = 0;layer < m_layers[i-1].size();layer++){
                             std::vector<float> layer_1d;
@@ -124,16 +158,19 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                         }
                         ConnectedLayer* conn_layer = new ConnectedLayer(m_function_type,{values.size(),30,10},true);
                         conn_layer->set_values(values);
-                        conn_layer->forward();
+//                        std::pair<std::vector<float>,std::vector<float>> conn_training_data = std::make_pair(values[0],t_data.second);
+//                        //has to be called before get_net_output
+//                        conn_layer->forward();
                         m_layers[i][j] = conn_layer;
+                        //insert outputs from prev layers into outputs, connected layer is trained in Convolutional::train();
+                        outputs.insert(outputs.end(),values[0].begin(),values[0].end());
                     }
                 }
             }
             //if last layer is reached
-            if(i == m_layers.size()-1){
-                std::vector<float> outputs_layers = m_layers[i][j]->get_net_output();
-                outputs.insert(outputs.end(),outputs_layers.begin(),outputs_layers.end());
-            }
+//            if(i == m_layers.size()-1){
+//                //moved up to layer::connected
+//            }
         }
     }
 
@@ -141,13 +178,13 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
 }
 
 //backpropagation with momentum
-float Convolutional::backPropMomentum(float &deltaCurrent, float &activationBefore, float &oldChange) {
+float Convolutional::backPropMomentum(float &delta_current, float &activation_before, float &old_change) {
 
 	//j -> i
 	//learningrate * deltai * activationj
-	float weightChange = (1-momentum) * learningRate * deltaCurrent * activationBefore + momentum * oldChange;
+	float weight_change = (1-m_momentum) * m_learning_rate * delta_current * activation_before + m_momentum * old_change;
 
-	return weightChange;
+	return weight_change;
 }
 
 size_t Convolutional::run_tests(){

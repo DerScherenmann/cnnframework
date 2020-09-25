@@ -16,50 +16,65 @@
 
 #include "knn/mathhelper.h"
 
-class Layer {
+class Layer
+{
 public:
-    Layer(){};
-    Layer(size_t t_width,size_t t_height,size_t t_depth,size_t t_type) : m_width(t_width), m_height(t_height),m_depth(t_depth), m_type(t_type) {
+    Layer() {};
+    Layer(size_t t_width,size_t t_height,size_t t_depth,size_t t_type) : m_width(t_width), m_height(t_height),m_depth(t_depth), m_type(t_type)
+    {
         m_values.resize(m_width);
-        for(size_t i = 0;i<m_width;i++){
+        for(size_t i = 0; i<m_width; i++)
+        {
             m_values[i].resize(m_height);
-            for(size_t j = 0;j < m_height;j++){
+            for(size_t j = 0; j < m_height; j++)
+            {
                 m_values[i][j] = math.rng();
             }
         }
     };
     //Layer(const Layer& orig){};
-    virtual ~Layer(){};
+    virtual ~Layer() {};
 
-    enum types{
+    enum types
+    {
         INPUT = 0,CONV,POOL,ACT,CONNECTED,OUTPUT
     };
 
-    virtual size_t get_width(){
+    virtual size_t get_width()
+    {
         return m_width;
     }
-    virtual size_t get_height(){
+    virtual size_t get_height()
+    {
         return m_height;
     }
-    virtual size_t get_depth(){
+    virtual size_t get_depth()
+    {
         return m_depth;
     }
-    virtual size_t get_padding(){
+    virtual size_t get_padding()
+    {
         return m_zero_padding;
     }
-    virtual size_t get_type(){
+    virtual size_t get_type()
+    {
         return m_type;
     }
-    virtual std::vector<std::vector<float>> get_values(){
+    virtual std::vector<std::vector<float>> get_values()
+    {
         return m_values;
     }
-    virtual size_t set_values(std::vector<std::vector<float>> t_input_values){
+    virtual size_t set_values(std::vector<std::vector<float>> t_input_values)
+    {
         m_values = t_input_values;
         return 0;
     }
 
     //declare some virtual functions for base classes to avoid dynamic casting
-    virtual std::vector<float> get_net_output(){};
+    virtual std::vector<float> get_net_output() {};
+    std::vector<float> train(std::pair<std::vector<float>,std::vector<float>> &t_training_data,float t_learning_rate,float t_momentum){}
+    size_t forward(){};
+
 protected:
     //outer vector width inner height
     std::vector<std::vector<float>> m_values;

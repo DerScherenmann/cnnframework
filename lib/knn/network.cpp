@@ -138,7 +138,7 @@ int Network::train(std::vector<std::pair<std::vector<float>, std::vector<float>>
 			auto startBackprop = std::chrono::high_resolution_clock::now();
 
 			//secondly we need to calculate delta for each neuron in the network (except input neurons), we are starting from behind
-                        //WARNING: changed to calculate input neurons as well as of implementation into CNN
+            //WARNING: changed to calculate input neurons as well as of implementation into CNN
 			for (int i = neuronLayers.size() - 1; i > 0; i--) {
 				//-1 bc we dont want to calculate for the bias
 				for (int j = 0; j <= neuronLayers[i].size() - 1; j++) {
