@@ -10,11 +10,13 @@
  *
  * Created on 6 September 2020, 02:22
  */
-
 #ifndef LAYER_H
 #define LAYER_H
 
 #include "knn/mathhelper.h"
+//#include "filter.h"
+
+class Filter;
 
 class Layer
 {
@@ -38,6 +40,9 @@ public:
     enum types
     {
         INPUT = 0,CONV,POOL,ACT,CONNECTED,OUTPUT
+    };
+    enum functiontype{
+        SWISH = 0,SIGMOID,RELU
     };
 
     virtual size_t get_width()
@@ -64,7 +69,11 @@ public:
     {
         return m_values;
     }
-    virtual size_t set_values(std::vector<std::vector<float>> t_input_values)
+//    virtual std::vector<std::vector<float>> get_old_changes()
+//    {
+//        return m_old_changes;
+//    }
+    virtual size_t set_values(std::vector<std::vector<float>> &t_input_values)
     {
         m_values = t_input_values;
         return 0;
@@ -72,12 +81,22 @@ public:
 
     //declare some virtual functions for base classes to avoid dynamic casting
     virtual std::vector<float> get_net_output() {};
-    std::vector<float> train(std::pair<std::vector<float>,std::vector<float>> &t_training_data,float t_learning_rate,float t_momentum){}
-    size_t forward(){};
+    virtual std::vector<float> train(std::pair<std::vector<float>,std::vector<float>> &t_training_data,float t_learning_rate,float t_momentum){}
+    virtual size_t forward(){};
+    virtual std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> get_org_index(){}
+    virtual std::vector<Filter> get_filters(){};
+    virtual size_t make_padding(){};
+    virtual size_t pool(std::vector<std::vector<float>>& t_input){};
+    virtual size_t calculate(std::vector<std::vector<float>> &inputValues){};
+    virtual size_t get_in_size(){};
 
 protected:
     //outer vector width inner height
     std::vector<std::vector<float>> m_values;
+//    //weights outer width inner height
+//    std::vector<std::vector<float>> m_weights;
+//    //old_changes outer width inner height
+//    std::vector<std::vector<float>> m_old_changes;
     size_t m_width;
     size_t m_height;
     size_t m_depth;
@@ -86,6 +105,4 @@ protected:
 private:
     size_t m_type;
 };
-
-#endif /* LAYER_H */
-
+#endif

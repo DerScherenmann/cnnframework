@@ -27,7 +27,7 @@ public:
     //ActivationLayer(const ActivationLayer& orig) : Layer(orig) {};
     virtual ~ActivationLayer(){};
 
-    size_t calculate(std::vector<std::vector<float>> inputValues){
+    size_t calculate(std::vector<std::vector<float>> &inputValues){
 
         for(size_t i = 0;i < m_width;i++){
             for(size_t j = 0;j < m_height;j++){

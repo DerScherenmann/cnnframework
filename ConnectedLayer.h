@@ -22,7 +22,7 @@
 class ConnectedLayer : public Layer{
 public:
     ConnectedLayer(){};
-    ConnectedLayer(size_t t_functiontype, std::vector<size_t> t_sizes, bool t_raw_output) : Layer(m_width,m_height,m_depth,Layer::types::CONNECTED), m_functiontype(t_functiontype){
+    ConnectedLayer(size_t t_functiontype, std::vector<size_t> t_sizes, bool t_raw_output) : Layer(0,0,0,Layer::types::CONNECTED), m_functiontype(t_functiontype), m_net_in_size(t_sizes[0]){
         std::vector<std::pair<int,int>> net_sizes;
         for(size_t layer_size:t_sizes){
             net_sizes.push_back(std::make_pair(layer_size,t_functiontype));
@@ -46,17 +46,18 @@ public:
         m_net_output = m_net->predict(m_values[0]);
         return 0;
     };
-    enum functiontype{
-        SWISH = 0,SIGMOID,RELU
-    };
     std::vector<float> get_net_output(){
         return m_net_output;
     }
     size_t get_type(){
         return Layer::CONNECTED;
     }
+    size_t get_in_size(){
+        return m_net_in_size;
+    }
 private:
     size_t m_functiontype;
+    size_t m_net_in_size;
     std::vector<float> m_net_output;
     Network* m_net;
 };

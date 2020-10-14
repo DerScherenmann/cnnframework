@@ -95,8 +95,31 @@ public:
         SWISH = 0,RELU,SIGMOID
     };
 
+    float act(float x){
+
+        if(m_function_type == SWISH){
+            x = math.swish(x);
+        }
+        if(m_function_type == SIGMOID){
+            x = math.sigmoid(x);
+        }
+        return x;
+    }
+
+    float actPrime(float x){
+
+        if(m_function_type == SWISH){
+            x = math.swishPrime(x);
+        }
+        if(m_function_type == SIGMOID){
+            x = math.sigmoidPrime(x);
+        }
+
+        return x;
+    }
+
     size_t train(std::vector<std::pair<std::vector<std::vector<float>>, std::vector<float>>> &t_training_data,size_t t_funcion_type,float t_learning_rate,float t_momentum, size_t t_epochs, size_t t_stride_filters,size_t t_stride_pools);
-    float backPropMomentum(float &deltaCurrent, float &activationBefore, float &oldChange);
+    float backprop_momentum(float &deltaCurrent, float &activationBefore, float &oldChange);
     size_t run_tests();
 private:
     size_t m_num_layers;
@@ -112,6 +135,8 @@ private:
     bool m_test;
     size_t m_stride_pool;
     size_t m_stride_filters;
+
+    Math math;
 
     std::vector<float> feed_forward(std::pair<std::vector<std::vector<float>>, std::vector<float>> &t_data);
     std::vector<float> feed_forward_first(std::pair<std::vector<std::vector<float>>, std::vector<float>> &t_data);

@@ -45,10 +45,12 @@ size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>
         for(std::pair<std::vector<std::vector<float>>, std::vector<float>> &data:t_training_data){
             //feed forward
             //TODO other feed_forward function
-            std::vector<float> outputs_layers = feed_forward_first(data);
+            std::vector<float> outputs_layers = feed_forward(data);
 
-            //start backpropagation from last layer (connected)
-            std::vector<float> deltas_before;
+            //deltas filter->width->height
+            std::vector<std::vector<std::vector<float>>> deltas_before;
+            std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> org_index;
+            size_t prev_layer_type = 0;
             for(size_t i = m_layers.size()-1;i > 0;i--){
                 //only for adding all outputs together
                 std::vector<float> outputs_connected_layers;
@@ -59,17 +61,80 @@ size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>
                     if(i == m_layers.size()-1){
                         std::vector<std::vector<float>> input_net;
                         input_net.push_back(outputs_layers);
+
                         m_layers[i][j]->set_values(input_net);
                         m_layers[i][j]->forward();
-                        outputs_connected_layers.insert(outputs_connected_layers.begin(),m_layers[i][j]->get_net_output().begin(),m_layers[i][j]->get_net_output().end());
+                        std::vector<float> net_output = m_layers[i][j]->get_net_output();
+                        outputs_connected_layers.insert(outputs_connected_layers.begin(),net_output.begin(),net_output.end());
 
                         //make training pair
                         std::pair<std::vector<float>,std::vector<float>> training_pair;
-                        //get deltas
-                        deltas_before = m_layers[i][j]->train(training_pair,m_learning_rate,m_momentum);
+
+                        std::vector<float> training_vector;
+                        for(size_t num_layers = 0;num_layers < m_layers[i-1].size();num_layers++){
+                            for(size_t width = 0;width < m_layers[i-1][num_layers]->get_height();width++){
+                                for(size_t height = 0;height < m_layers[i-1][num_layers]->get_width();height++){
+                                    training_vector.push_back(m_layers[i-1][num_layers]->get_values()[width][height]);
+                                }
+                            }
+                        }
+
+                        training_pair = std::make_pair(training_vector,data.second);
+
+                        //get deltas and make to 3d format
+                        std::vector<float> deltas_connected = m_layers[i][j]->train(training_pair,m_learning_rate,m_momentum);
+                        for(size_t num_layers = 0;num_layers < m_layers[i-1].size();num_layers++){
+                            std::vector<std::vector<float>> deltas_filter;
+                            for(size_t width = 0;width < m_layers[i-1][num_layers]->get_height();width++){
+                                std::vector<float> column;
+                                for(size_t height = 0;height < m_layers[i-1][num_layers]->get_width();height++){
+                                    column.push_back(deltas_connected[width*height]);
+                                }
+                                deltas_filter.push_back(column);
+                            }
+                            deltas_before.push_back(deltas_filter);
+                        }
+
+                        prev_layer_type = Layer::CONNECTED;
                     }else{
                         //other layers
                         //we have to do different things for different layers, so 'ol switch case is pretty handy
+                        size_t layer_type = m_layers[i][j]->get_type();
+                        switch(layer_type){
+                            case Layer::CONV:{
+                                if(prev_layer_type == Layer::POOL){
+                                    size_t filter_num = 0;
+                                    for(Filter &filter:m_layers[i][j]->get_filters()){
+                                        //backpropagate filter
+                                        //delta = f'(sum)*sum(prevDeltas*weights)
+                                        float sum = 0;
+                                        for(size_t width = 0;width < filter.get_values().size();width++){
+                                            for(size_t height = 0;height < filter.get_values()[width].size();height++){
+                                                //check if relevant and not pooled
+                                                auto [x,y] = org_index[width][height].second;
+                                                if(x != width && y != height){
+                                                    //sum += filter.get_weights()[width][height] * deltas_before[filter_num][width][height];
+                                                }
+                                            }
+                                        }
+                                        filter_num++;
+                                    }
+                                }
+                                break;
+                            }
+                            case Layer::POOL:{
+                                //we essentially dont have to do anything because we dont calculate anything for pool layers
+                                //only pass on indici
+                                org_index = m_layers[i][j]->get_org_index();
+                                break;
+                            }
+                            //TODO make class first
+                            case Layer::ACT:{
+
+                                break;
+                            }
+                        }
+                        prev_layer_type = layer_type;
                     }
                 }
                 //only add to all outputs if in last layers
@@ -81,6 +146,8 @@ size_t Convolutional::train(std::vector<std::pair<std::vector<std::vector<float>
         }
     }
 
+    std::cout << "Finished training" << std::endl;
+
     return 0;
 }
 
@@ -91,6 +158,9 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
     //TODO only initialize layers the first feed forward iteration
     //go through each "slice" of the cnn example: input, conv conv , pool pool , output
     for(size_t i = 0;i < m_layers.size();i++){
+        //connected layer vals
+        std::vector<std::vector<float>> conn_values;
+        conn_values.push_back(std::vector<float>());
         //TODO multithreading till connected layer?
         for(size_t j = 0;j < m_layers[i].size();j++){
             if(i == 0){
@@ -98,6 +168,101 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                 Layer* layer = new Layer(t_data.first.size(),t_data.first[0].size(),1,Layer::INPUT);
                 layer->set_values(t_data.first);
                 m_layers[i][j] = layer;
+            }else{
+                //get previous type, index 0 bc all vertical layer should be the same
+                size_t layer_prev_type = m_layers[i-1][0]->get_type();
+                //get current type
+                size_t layer_type = m_layers[i][j]->get_type();
+
+                //forward values
+                std::vector<std::vector<float>> values;
+
+                if(m_layers[i-1][0]->get_type() == Layer::CONV){
+                    values = m_layers[i-1][j/m_num_filters]->get_values();
+                }else {
+                    values = m_layers[i-1][j]->get_values();
+                }
+
+//                if(m_test){
+//                    std::cout << "Size: i = " << i << ": " << m_layers[i].size() << std::endl;
+//                    std::cout << "Layertype: " << m_layers[i][j]->get_type() << std::endl;
+//                    std::cout << "Layertype before: " << m_layers[i-1][0]->get_type() << std::endl;
+//                    std::cout << "Size Values before: " << values.size() << "x" << values[0].size() << std::endl;
+//                }
+
+                switch(layer_type){
+                    case Layer::CONV:{
+                        ConvolutionLayer* conv_layer = new ConvolutionLayer(t_data.first.size(),t_data.first[0].size(),1,m_zero_padding,m_stride_filters,m_num_filters,m_filters_size,m_function_type);
+                        conv_layer->set_values(t_data.first);
+                        conv_layer->make_padding();
+                        m_layers[i][j] = conv_layer;
+                        break;
+                    }
+                    case Layer::POOL:{
+                        //push back as much as we need if prev layer is conv layer
+
+                        PoolLayer* pool_layer = new PoolLayer(2,2,1,m_stride_pool);
+                        pool_layer->pool(values);
+                        m_layers[i][j] = pool_layer;
+                        break;
+                    }
+                    case Layer::ACT:{
+                        //see pool case
+                        ActivationLayer* act_layer = new ActivationLayer(values.size(),values[0].size(),1,m_function_type);
+                        act_layer->calculate(values);
+                        m_layers[i][j] = act_layer;
+                        break;
+                    }
+                    //this does not work here because the connected layer train function need to be called up there
+                    //just init this layer here
+                    case Layer::CONNECTED:{
+                        std::vector<float> layer_1d;
+                        for(size_t num_layers = 0;num_layers < m_layers[i-1].size();num_layers++){
+                            for(size_t width = 0;width < m_layers[i-1][num_layers]->get_height();width++){
+                                for(size_t height = 0;height < m_layers[i-1][num_layers]->get_width();height++){
+                                    values = m_layers[i-1][num_layers]->get_values();
+                                    //TODO why is this always 0?
+                                    float value = values[width][height];
+                                    layer_1d.push_back(value);
+                                }
+                            }
+                        }
+                        //values should be empty if connected layer
+                        conn_values.insert(conn_values.begin(),layer_1d);
+                        ConnectedLayer* conn_layer = new ConnectedLayer(m_function_type,{values[0].size(),30,10},true);
+                        conn_layer->set_values(values);
+//                        std::pair<std::vector<float>,std::vector<float>> conn_training_data = std::make_pair(values[0],t_data.second);
+//                        //has to be called before get_net_output
+//                        conn_layer->forward();
+                        m_layers[i][j] = conn_layer;
+                        //insert outputs from prev layers into outputs, connected layer is trained in Convolutional::train();
+                        outputs.insert(outputs.end(),values[0].begin(),values[0].end());
+                    }
+                }
+            }
+            //if last layer is reached
+//            if(i == m_layers.size()-1){
+//                //moved up to layer::connected
+//            }
+        }
+    }
+
+    return outputs;
+}
+
+std::vector<float> Convolutional::feed_forward(std::pair<std::vector<std::vector<float>>, std::vector<float>> &t_data){
+
+    std::vector<float> outputs;
+    std::vector<std::thread> forward_threads;
+
+    //TODO only initialize layers the first feed forward iteration
+    //go through each "slice" of the cnn example: input, conv conv , pool pool , output
+    for(size_t i = 0;i < m_layers.size();i++){
+        //TODO multithreading till connected layer?
+        for(size_t j = 0;j < m_layers[i].size();j++){
+            if(i == 0){
+                //set input values
+                m_layers[i][j]->set_values(t_data.first);
             }else{
                 //get previous type, index 0 bc all vertical layer should be the same
                 size_t layer_prev_type = m_layers[i-1][0]->get_type();
@@ -122,25 +287,18 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
 
                 switch(layer_type){
                     case Layer::CONV:{
-                        ConvolutionLayer* conv_layer = new ConvolutionLayer(t_data.first.size(),t_data.first[0].size(),1,m_zero_padding,m_stride_filters,m_num_filters,m_filters_size);
-                        conv_layer->set_values(t_data.first);
-                        conv_layer->make_padding();
-                        m_layers[i][j] = conv_layer;
+                        m_layers[i][j]->set_values(t_data.first);
+                        m_layers[i][j]->make_padding();
                         break;
                     }
                     case Layer::POOL:{
                         //push back as much as we need if prev layer is conv layer
-
-                        PoolLayer* pool_layer = new PoolLayer(2,2,1,m_stride_pool);
-                        pool_layer->pool(values);
-                        m_layers[i][j] = pool_layer;
+                        m_layers[i][j]->pool(values);
                         break;
                     }
                     case Layer::ACT:{
                         //see pool case
-                        ActivationLayer* act_layer = new ActivationLayer(values.size(),values[0].size(),1,m_function_type);
-                        act_layer->calculate(values);
-                        m_layers[i][j] = act_layer;
+                        m_layers[i][j]->calculate(values);
                         break;
                     }
                     //this does not work here because the connected layer train function need to be called up there
@@ -156,12 +314,10 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
                             //insert all prev values to connected layer
                             values[0].insert(values[0].begin(),layer_1d.begin(),layer_1d.end());
                         }
-                        ConnectedLayer* conn_layer = new ConnectedLayer(m_function_type,{values.size(),30,10},true);
-                        conn_layer->set_values(values);
+                        m_layers[i][j]->set_values(values);
 //                        std::pair<std::vector<float>,std::vector<float>> conn_training_data = std::make_pair(values[0],t_data.second);
 //                        //has to be called before get_net_output
 //                        conn_layer->forward();
-                        m_layers[i][j] = conn_layer;
                         //insert outputs from prev layers into outputs, connected layer is trained in Convolutional::train();
                         outputs.insert(outputs.end(),values[0].begin(),values[0].end());
                     }
@@ -177,8 +333,9 @@ std::vector<float> Convolutional::feed_forward_first(std::pair<std::vector<std::
     return outputs;
 }
 
+
 //backpropagation with momentum
-float Convolutional::backPropMomentum(float &delta_current, float &activation_before, float &old_change) {
+float Convolutional::backprop_momentum(float &delta_current, float &activation_before, float &old_change) {
 
 	//j -> i
 	//learningrate * deltai * activationj
@@ -233,7 +390,7 @@ size_t Convolutional::run_tests(){
     std::vector<ConvolutionLayer> conv_layers;
     for(size_t i = 0;i < inputs.size();i++){
 
-        ConvolutionLayer conv = ConvolutionLayer(input_size,input_size,1,1,filter_stride,num_filters,filter_size);
+        ConvolutionLayer conv = ConvolutionLayer(input_size,input_size,1,1,filter_stride,num_filters,filter_size,m_function_type);
         conv.set_values(inputs[i]);
         conv.make_padding();
         conv_layers.push_back(conv);
@@ -296,9 +453,10 @@ size_t Convolutional::run_tests(){
 
             for(Filter filter:filters){
                 Layer output = filter.calculate_output(architecture[i][j]);
+                std::vector<std::vector<float>> output_values = output.get_values();
 
                 PoolLayer pool = PoolLayer(pool_size,pool_size,1,pool_stride);
-                pool.pool(output.get_values());
+                pool.pool(output_values);
 
                 std::cout << std::endl;
                 for(size_t j = 0;j<pool.get_values().size();j++){
@@ -408,9 +566,11 @@ size_t Convolutional::run_tests(){
         std::cout << std::endl;
     }
     std::cout << std::endl;
-    this->train(test_data,SWISH,0.02,0.05,100,1,2);
+    this->train(test_data,SWISH,0.02,0.05,100,1,3);
 
     m_test = false;
+
+    std::cout << "Finished tests" << std::endl;
 
     return 0;
 }

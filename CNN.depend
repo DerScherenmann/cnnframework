@@ -1,10 +1,10 @@
 # depslib dependency file v1.0
 1600782705 source:/home/broesel233/programming/cpp_projects/CNN/ActivationLayer.cpp
 
-1600786927 /home/broesel233/programming/cpp_projects/CNN/ActivationLayer.h
+1601123933 /home/broesel233/programming/cpp_projects/CNN/ActivationLayer.h
 	"layer.h"
 
-1601048998 /home/broesel233/programming/cpp_projects/CNN/layer.h
+1601129407 /home/broesel233/programming/cpp_projects/CNN/layer.h
 	"knn/mathhelper.h"
 
 1600196820 /home/broesel233/programming/cpp_projects/CNN/lib/knn/mathhelper.h
@@ -12,7 +12,7 @@
 	<random>
 	<vector>
 
-1601051495 source:/home/broesel233/programming/cpp_projects/CNN/convnetwork.cpp
+1601130476 source:/home/broesel233/programming/cpp_projects/CNN/convnetwork.cpp
 	<vector>
 	<string>
 	<utility>
@@ -25,7 +25,7 @@
 	"ConnectedLayer.h"
 	"filter.h"
 
-1601048587 /home/broesel233/programming/cpp_projects/CNN/convnetwork.h
+1601059603 /home/broesel233/programming/cpp_projects/CNN/convnetwork.h
 	<vector>
 	<string>
 	<algorithm>
@@ -37,17 +37,18 @@
 	"ActivationLayer.h"
 	"ConnectedLayer.h"
 
-1600795625 /home/broesel233/programming/cpp_projects/CNN/filter.h
+1601125418 /home/broesel233/programming/cpp_projects/CNN/filter.h
 	"knn/mathhelper.h"
 	"layer.h"
 	<iostream>
+	<vector>
 
-1600876083 /home/broesel233/programming/cpp_projects/CNN/PoolLayer.h
+1601123884 /home/broesel233/programming/cpp_projects/CNN/PoolLayer.h
 	<algorithm>
 	<tuple>
 	"layer.h"
 
-1600792835 /home/broesel233/programming/cpp_projects/CNN/ConvolutionLayer.h
+1601123004 /home/broesel233/programming/cpp_projects/CNN/ConvolutionLayer.h
 	<iostream>
 	"layer.h"
 	"filter.h"
@@ -67,7 +68,7 @@
 	<random>
 	<vector>
 
-1601047457 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/network.cpp
+1601129291 source:/home/broesel233/programming/cpp_projects/CNN/lib/knn/network.cpp
 	<algorithm>
 	"mathhelper.h"
 	"network.h"
@@ -126,7 +127,7 @@
 1599762109 source:/home/broesel233/programming/cpp_projects/CNN/ConnectedLayer.cpp
 	"ConnectedLayer.h"
 
-1601049000 /home/broesel233/programming/cpp_projects/CNN/ConnectedLayer.h
+1601129445 /home/broesel233/programming/cpp_projects/CNN/ConnectedLayer.h
 	<utility>
 	"layer.h"
 	"knn/network.h"

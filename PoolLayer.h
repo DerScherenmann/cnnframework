@@ -19,7 +19,6 @@
 
 #include "layer.h"
 
-
 class PoolLayer : public Layer {
 public:
 
@@ -33,7 +32,7 @@ public:
      * @return
      */
     //TODO test reference vs normal
-    size_t pool(std::vector<std::vector<float>> t_input){
+    size_t pool(std::vector<std::vector<float>>& t_input){
 
         std::vector<std::vector<float>> pane;
         std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> index_pane;

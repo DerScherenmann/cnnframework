@@ -26,15 +26,33 @@ public:
      *
      */
     ConvolutionLayer(){};
-    ConvolutionLayer(size_t t_height,size_t t_width,size_t t_depth,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes) :
+    ConvolutionLayer(size_t t_height,size_t t_width,size_t t_depth,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes,size_t t_function_type) :
                         Layer(t_height,t_width,t_depth,Layer::types::CONV), m_num_filters(t_num_filters), m_filter_sizes(t_filter_sizes), m_stride(t_stride) {
 
         m_zero_padding = t_zero_padding;
         m_filters.reserve(m_num_filters);
         for(size_t i = 0;i < m_num_filters;i++){
-            Filter k = Filter(m_filter_sizes,m_stride);
+            Filter k = Filter(m_filter_sizes,m_stride,t_function_type);
             m_filters.push_back(k);
         }
+
+//        //fucking retarded weights are in filter
+//        //init random weigths
+//        for(size_t i = 0;i < t_width;i++){
+//            std::vector<float> column;
+//            for(size_t j = 0;j < t_height;j++){
+//                column.push_back(math.rng());
+//            }
+//            m_weights.push_back(column);
+//        }
+//        //zero old changes so first time is always 0
+//        for(size_t i = 0;i < t_width;i++){
+//            std::vector<float> column;
+//            for(size_t j = 0;j < t_height;j++){
+//                column.push_back(0);
+//            }
+//            old_changes.push_back(column);
+//        }
     };
 
     std::vector<Filter> get_filters(){

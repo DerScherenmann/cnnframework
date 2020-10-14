@@ -33,7 +33,9 @@ Network::Network(std::vector<std::pair<int,int>> sizes)
 
 	int y = 1;
 	for (int x = 0; x < numLayers;x++) {
-		if (y >= numLayers) break;
+		if (y >= numLayers){
+            break;
+		}
 		//inititalize weight vector with random numbers
 		weights.push_back(math.defmatrix(sizes[x].first+1, sizes[y].first));
 		//initialize gradient vector with random stuff
@@ -84,8 +86,9 @@ Network::Network(std::vector<std::pair<int,int>> sizes)
 		hiddenLayers[i - 1].push_back(Neuron(1, Neuron::BIAS,Neuron::SIGMOID));
 	}
 
-	for (std::vector<Neuron> hiddenLayer : hiddenLayers)
-		neuronLayers.insert(neuronLayers.end() - 1, hiddenLayer);
+	for (std::vector<Neuron> hiddenLayer : hiddenLayers){
+        neuronLayers.insert(neuronLayers.end() - 1, hiddenLayer);
+	}
 
 	hiddenLayers.clear();
 }
@@ -520,13 +523,13 @@ std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector
 
     //TODO improve performance of forward propagation
     //also set activations
-    std::vector<Neuron> output = feedForward(pair.first);
+    //std::vector<Neuron> output = feedForward(pair.first);
 
     //secondly we need to calculate delta for each neuron in the network (except input neurons), we are starting from behind
     //WARNING: changed to calculate input neurons as well as of implementation into CNN
-    for (size_t i = neuronLayers.size() - 1; i > 0; i--) {
+    for (int i = neuronLayers.size() - 1; i >= 0; i--) {
         //neuronLayers[i].size()-1 because we dont want to calculate for the bias
-        for (size_t j = 0; j <= neuronLayers[i].size() - 1; j++) {
+        for (size_t j = 0; j < neuronLayers[i].size(); j++) {
             //the output layer uses a different function
             if (i == neuronLayers.size() - 1) {
                 //delta = f'(sum) * (o - t)
