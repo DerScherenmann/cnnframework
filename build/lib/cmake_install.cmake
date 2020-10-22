@@ -1,4 +1,4 @@
-# Install script for directory: /home/broesel233/projects/CNN/lib
+# Install script for directory: /home/broesel233/projects/cnn/lib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

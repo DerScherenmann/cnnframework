@@ -138,8 +138,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/home/broesel233/projects/CNN/build",
-		"source" : "/home/broesel233/projects/CNN"
+		"build" : "/home/broesel233/projects/cnn/build",
+		"source" : "/home/broesel233/projects/cnn"
 	},
 	"version" : 
 	{

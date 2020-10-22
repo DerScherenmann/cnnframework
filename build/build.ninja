@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 # Utility command for install/strip
 
 build CMakeFiles/install/strip.util: CUSTOM_COMMAND all
-  COMMAND = cd /home/broesel233/projects/CNN/build && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  COMMAND = cd /home/broesel233/projects/cnn/build && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
   DESC = Installing the project stripped...
   pool = console
   restat = 1
@@ -51,7 +51,7 @@ build install/strip: phony CMakeFiles/install/strip.util
 # Utility command for install/local
 
 build CMakeFiles/install/local.util: CUSTOM_COMMAND all
-  COMMAND = cd /home/broesel233/projects/CNN/build && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+  COMMAND = cd /home/broesel233/projects/cnn/build && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
   DESC = Installing only the local directory...
   pool = console
   restat = 1
@@ -63,7 +63,7 @@ build install/local: phony CMakeFiles/install/local.util
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/broesel233/projects/CNN/build && /usr/bin/cmake-gui -S/home/broesel233/projects/CNN -B/home/broesel233/projects/CNN/build
+  COMMAND = cd /home/broesel233/projects/cnn/build && /usr/bin/cmake-gui -S/home/broesel233/projects/cnn -B/home/broesel233/projects/cnn/build
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -75,7 +75,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for install
 
 build CMakeFiles/install.util: CUSTOM_COMMAND all
-  COMMAND = cd /home/broesel233/projects/CNN/build && /usr/bin/cmake -P cmake_install.cmake
+  COMMAND = cd /home/broesel233/projects/cnn/build && /usr/bin/cmake -P cmake_install.cmake
   DESC = Install the project...
   pool = console
   restat = 1
@@ -93,7 +93,7 @@ build list_install_components: phony
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/broesel233/projects/CNN/build && /usr/bin/cmake --regenerate-during-build -S/home/broesel233/projects/CNN -B/home/broesel233/projects/CNN/build
+  COMMAND = cd /home/broesel233/projects/cnn/build && /usr/bin/cmake --regenerate-during-build -S/home/broesel233/projects/cnn -B/home/broesel233/projects/cnn/build
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -176,8 +176,8 @@ build CMakeFiles/cnn.dir/ConvolutionLayer.cpp.o: CXX_COMPILER__cnn_Debug ../Conv
 build cnn: CXX_EXECUTABLE_LINKER__cnn_Debug CMakeFiles/cnn.dir/main.cpp.o CMakeFiles/cnn.dir/convnetwork.cpp.o CMakeFiles/cnn.dir/ActivationLayer.cpp.o CMakeFiles/cnn.dir/ConnectedLayer.cpp.o CMakeFiles/cnn.dir/layer.cpp.o CMakeFiles/cnn.dir/filter.cpp.o CMakeFiles/cnn.dir/PoolLayer.cpp.o CMakeFiles/cnn.dir/ConvolutionLayer.cpp.o | lib/libknn.a || lib/libknn.a
   FLAGS = -g
   LINK_FLAGS = -rdynamic
-  LINK_LIBRARIES = -Wl,-rpath,/home/broesel233/projects/CNN/lib:  lib/libknn.a
-  LINK_PATH = -L/home/broesel233/projects/CNN/lib
+  LINK_LIBRARIES = -Wl,-rpath,/home/broesel233/projects/cnn/lib:  lib/libknn.a
+  LINK_PATH = -L/home/broesel233/projects/cnn/lib
   OBJECT_DIR = CMakeFiles/cnn.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -186,7 +186,7 @@ build cnn: CXX_EXECUTABLE_LINKER__cnn_Debug CMakeFiles/cnn.dir/main.cpp.o CMakeF
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
-# /home/broesel233/projects/CNN/CMakeLists.txt
+# /home/broesel233/projects/cnn/CMakeLists.txt
 # =============================================================================
 
 
@@ -194,7 +194,7 @@ build cnn: CXX_EXECUTABLE_LINKER__cnn_Debug CMakeFiles/cnn.dir/main.cpp.o CMakeF
 # Utility command for install/strip
 
 build lib/CMakeFiles/install/strip.util: CUSTOM_COMMAND lib/all
-  COMMAND = cd /home/broesel233/projects/CNN/build/lib && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  COMMAND = cd /home/broesel233/projects/cnn/build/lib && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
   DESC = Installing the project stripped...
   pool = console
   restat = 1
@@ -206,7 +206,7 @@ build lib/install/strip: phony lib/CMakeFiles/install/strip.util
 # Utility command for install/local
 
 build lib/CMakeFiles/install/local.util: CUSTOM_COMMAND lib/all
-  COMMAND = cd /home/broesel233/projects/CNN/build/lib && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+  COMMAND = cd /home/broesel233/projects/cnn/build/lib && /usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
   DESC = Installing only the local directory...
   pool = console
   restat = 1
@@ -218,7 +218,7 @@ build lib/install/local: phony lib/CMakeFiles/install/local.util
 # Utility command for install
 
 build lib/CMakeFiles/install.util: CUSTOM_COMMAND lib/all
-  COMMAND = cd /home/broesel233/projects/CNN/build/lib && /usr/bin/cmake -P cmake_install.cmake
+  COMMAND = cd /home/broesel233/projects/cnn/build/lib && /usr/bin/cmake -P cmake_install.cmake
   DESC = Install the project...
   pool = console
   restat = 1
@@ -236,7 +236,7 @@ build lib/list_install_components: phony
 # Utility command for rebuild_cache
 
 build lib/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/broesel233/projects/CNN/build/lib && /usr/bin/cmake --regenerate-during-build -S/home/broesel233/projects/CNN -B/home/broesel233/projects/CNN/build
+  COMMAND = cd /home/broesel233/projects/cnn/build/lib && /usr/bin/cmake --regenerate-during-build -S/home/broesel233/projects/cnn -B/home/broesel233/projects/cnn/build
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -248,7 +248,7 @@ build lib/rebuild_cache: phony lib/CMakeFiles/rebuild_cache.util
 # Utility command for edit_cache
 
 build lib/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/broesel233/projects/CNN/build/lib && /usr/bin/cmake-gui -S/home/broesel233/projects/CNN -B/home/broesel233/projects/CNN/build
+  COMMAND = cd /home/broesel233/projects/cnn/build/lib && /usr/bin/cmake-gui -S/home/broesel233/projects/cnn -B/home/broesel233/projects/cnn/build
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -314,14 +314,14 @@ build libknn.a: phony lib/libknn.a
 # =============================================================================
 
 #############################################
-# Folder: /home/broesel233/projects/CNN/build
+# Folder: /home/broesel233/projects/cnn/build
 
 build all: phony cnn lib/all
 
 # =============================================================================
 
 #############################################
-# Folder: /home/broesel233/projects/CNN/build/lib
+# Folder: /home/broesel233/projects/cnn/build/lib
 
 build lib/all: phony lib/libknn.a
 

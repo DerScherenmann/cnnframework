@@ -70,7 +70,7 @@
 			[
 				{
 					"backtrace" : 5,
-					"path" : "/home/broesel233/projects/CNN/lib"
+					"path" : "/home/broesel233/projects/cnn/lib"
 				}
 			],
 			"language" : "CXX",
@@ -123,11 +123,11 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "-L/home/broesel233/projects/CNN/lib",
+				"fragment" : "-L/home/broesel233/projects/cnn/lib",
 				"role" : "libraryPath"
 			},
 			{
-				"fragment" : "-Wl,-rpath,/home/broesel233/projects/CNN/lib:",
+				"fragment" : "-Wl,-rpath,/home/broesel233/projects/cnn/lib:",
 				"role" : "libraries"
 			},
 			{
