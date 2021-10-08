@@ -18,7 +18,7 @@ Doxyfile
 *.kdevelop.pcs
 *.kdevses
 .*kate-swp
-build/
+build/*
 mem.log.*
 massif.*
 callgrind.*
