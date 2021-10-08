@@ -16,52 +16,69 @@
 
 #include <algorithm>
 #include <tuple>
+#include <stdexcept>
+#include <iostream>
 
-#include "layer.h"
+#include "Layer.h"
 
+using namespace layer;
+
+/**
+ * Pooling Layer
+ */
 class PoolLayer : public Layer {
 public:
 
     PoolLayer(){};
-    PoolLayer(size_t t_width,size_t t_height,size_t t_depth,size_t t_stride) : Layer(t_width,t_height,t_depth,Layer::types::POOL), m_stride(t_stride){};
+    PoolLayer(array_2d_t t_values,size_t t_stride) : Layer(t_values,Layer::POOL), m_stride(t_stride){};
     //PoolLayer(const PoolLayer& orig) : Layer(orig) {};
     virtual ~PoolLayer(){};
     /**
-     * Pool inputs (input must multiple of width and height)
+     * Pool inputs (input must be multiple of width and height)
      * @param input
      * @return
      */
     //TODO test reference vs normal
-    size_t pool(std::vector<std::vector<float>>& t_input){
-
+    //TODO padding if input width or height cant be divided by m_stride
+    size_t pool(array_2d_t t_input){
+        
         std::vector<std::vector<float>> pane;
         std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> index_pane;
-        for(size_t input_width = 0;input_width < t_input.size();input_width+=m_stride){
+        for(size_t input_width = 0;input_width < t_input.size() -1;input_width+=m_stride){
             std::vector<float> column;
             std::vector<std::pair<float, std::pair<size_t,size_t>>> index_column;
-            for(size_t input_height = 0;input_height < t_input.size();input_height+=m_stride){
+            for(size_t input_height = 0;input_height < t_input[0].size() -1;input_height+=m_stride){
                 //get highest value and add to outputs
                 std::vector<float> values;
                 std::pair<float, std::pair<size_t,size_t>> index;
                 for(size_t x = 0;x < m_width;x++){
                     for(size_t y = 0;y < m_height;y++){
+                        //continue if pool reached the end
+                        if(input_width+x > t_input.size()-1 || input_height+y > t_input[0].size()-1){
+                            continue;
+                        }
                         values.push_back(t_input[input_width+x][input_height+y]);
                         index.first = t_input[input_width+x][input_height+y];
                         index.second = std::make_pair(input_width+x,input_height+y);
                     }
                 }
+                //pool highest value
                 std::sort(values.begin(),values.end(),std::greater<float>());
+                
+                m_values[input_width][input_height] = values[0];
+                
                 column.push_back(values[0]);
                 index_column.push_back(index);
             }
             pane.push_back(column);
             index_pane.push_back(index_column);
         }
-        m_values = pane;
+        //m_values = pane;
         m_output_prev_index = index_pane;
 
         return 0;
     }
+    
     std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> get_org_index(){
         return m_output_prev_index;
     }

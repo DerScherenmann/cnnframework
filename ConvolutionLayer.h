@@ -16,8 +16,10 @@
 
 #include <iostream>
 
-#include "layer.h"
+#include "Layer.h"
 #include "filter.h"
+
+using namespace layer;
 
 class ConvolutionLayer : public Layer {
 public:
@@ -26,8 +28,8 @@ public:
      *
      */
     ConvolutionLayer(){};
-    ConvolutionLayer(size_t t_height,size_t t_width,size_t t_depth,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes,size_t t_function_type) :
-                        Layer(t_height,t_width,t_depth,Layer::types::CONV), m_num_filters(t_num_filters), m_filter_sizes(t_filter_sizes), m_stride(t_stride) {
+    ConvolutionLayer(array_2d_t t_values,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes,size_t t_function_type) :
+                        Layer(t_values,Layer::types::CONV), m_num_filters(t_num_filters), m_filter_sizes(t_filter_sizes), m_stride(t_stride) {
 
         m_zero_padding = t_zero_padding;
         m_filters.reserve(m_num_filters);
@@ -63,39 +65,37 @@ public:
     //virtual ~ConvolutionLayer(){};
 
     /**
-     * Forward input volume through convolutional layer
-     * @param t_input_volume (depth,width,height)
-     * @return
+     * Make zero padding to lose less data
      */
     size_t make_padding(){
-
-        //this is not needed here ?
-        //m_width = (m_values.size()-m_filter_sizes+2*m_zero_padding)/m_stride +2;
-        m_width = m_values.size()+m_zero_padding;
-        m_height = m_width;
-        m_depth = m_num_filters;
-
+        //this is not needed here
+        m_width = m_values.size()+2*m_zero_padding;
+        m_height = m_values[0].size()+2*m_zero_padding;
+        
+        boost::array<array_2d_t::index, 2> shape_padding = {{ (long) m_width, (long) m_height }};
+        array_2d_t array_padding(shape_padding);
+        
         if(m_zero_padding != 0){
-            for(size_t i = 0;i < m_zero_padding;i++){
-                //insert padding row values
-                for(size_t width = 0;width < m_values.size();width++){
-                    m_values[width].insert(m_values[width].begin(),0);
-                    m_values[width].push_back(0);
+            for(size_t num_padding = 0;num_padding < m_zero_padding;num_padding++){
+                for(size_t i = 0;i < array_padding.size();i++){
+                    for(size_t j = 0;j < array_padding[0].size();j++){
+                        //padding
+                        if(i < m_zero_padding || i+1 > array_padding.size()-m_zero_padding || j < m_zero_padding || j+1 > array_padding[0].size()-m_zero_padding){
+                            array_padding[i][j] = 0;
+                        }else{
+                            //add m_values to array
+                            array_padding[i][j] = m_values[i-m_zero_padding][j-m_zero_padding];
+                        }
+                    }
                 }
-                //make padding column
-                std::vector<float> padding_column;
-                padding_column.reserve(m_height);
-                for(size_t height = 0;height < m_height+1;height++){
-                    padding_column.push_back(0);
-                }
-                m_values.insert(m_values.begin(),padding_column);
-                m_values.push_back(padding_column);
-                padding_column.clear();
             }
         }
-
+        m_values.resize(boost::extents[array_padding.size()][array_padding[0].size()]);
+        m_values = array_padding;
+        
         return 0;
     }
+    
     size_t get_type(){
         return Layer::CONV;
     }

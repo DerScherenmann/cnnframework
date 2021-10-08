@@ -14,20 +14,22 @@
 #ifndef ACTIVATIONLAYER_H
 #define ACTIVATIONLAYER_H
 
-#include "layer.h"
+#include "Layer.h"
+
+using namespace layer;
 
 class ActivationLayer : public Layer {
 public:
     size_t typeFunction;
 
     ActivationLayer(){};
-    ActivationLayer(size_t width,size_t height,size_t depth,size_t functiontype) : Layer(width,height,depth,Layer::types::ACT), typeFunction(functiontype){
+    ActivationLayer(array_2d_t t_values,size_t functiontype) : Layer(t_values,Layer::ACT), typeFunction(functiontype){
 
     };
     //ActivationLayer(const ActivationLayer& orig) : Layer(orig) {};
     virtual ~ActivationLayer(){};
 
-    size_t calculate(std::vector<std::vector<float>> &inputValues){
+    size_t calculate(array_2d_t inputValues){
 
         for(size_t i = 0;i < m_width;i++){
             for(size_t j = 0;j < m_height;j++){

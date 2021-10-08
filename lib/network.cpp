@@ -516,8 +516,9 @@ int Network::load(std::string filename) {
  * @param momentum
  * @return vector containing deltas of neurons
  */
-std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector<float>> &pair,float learningRate,float momentum) {
-
+std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector<float>> &pair,float t_learningRate,float t_momentum){
+    learningRate = t_learningRate;
+    momentum = t_momentum;
     //returned deltas of input layer
     std::vector<float> deltas;
 
@@ -526,7 +527,7 @@ std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector
     //std::vector<Neuron> output = feedForward(pair.first);
 
     //secondly we need to calculate delta for each neuron in the network (except input neurons), we are starting from behind
-    //WARNING: changed to calculate input neurons as well as of implementation into CNN
+    //WARNING: changed to calculate input neurons as well after implementation into CNN
     for (int i = neuronLayers.size() - 1; i >= 0; i--) {
         //neuronLayers[i].size()-1 because we dont want to calculate for the bias
         for (size_t j = 0; j < neuronLayers[i].size(); j++) {

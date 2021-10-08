@@ -1,57 +1,27 @@
 [
 {
   "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/main.cpp.o -c /home/broesel233/projects/cnn/main.cpp",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/convnetwork.dir/main.cpp.o -c /home/broesel233/projects/cnn/main.cpp",
   "file": "/home/broesel233/projects/cnn/main.cpp"
 },
 {
   "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/convnetwork.cpp.o -c /home/broesel233/projects/cnn/convnetwork.cpp",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/convnetwork.dir/convnetwork.cpp.o -c /home/broesel233/projects/cnn/convnetwork.cpp",
   "file": "/home/broesel233/projects/cnn/convnetwork.cpp"
 },
 {
   "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/ActivationLayer.cpp.o -c /home/broesel233/projects/cnn/ActivationLayer.cpp",
-  "file": "/home/broesel233/projects/cnn/ActivationLayer.cpp"
-},
-{
-  "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/ConnectedLayer.cpp.o -c /home/broesel233/projects/cnn/ConnectedLayer.cpp",
-  "file": "/home/broesel233/projects/cnn/ConnectedLayer.cpp"
-},
-{
-  "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/layer.cpp.o -c /home/broesel233/projects/cnn/layer.cpp",
-  "file": "/home/broesel233/projects/cnn/layer.cpp"
-},
-{
-  "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/filter.cpp.o -c /home/broesel233/projects/cnn/filter.cpp",
-  "file": "/home/broesel233/projects/cnn/filter.cpp"
-},
-{
-  "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/PoolLayer.cpp.o -c /home/broesel233/projects/cnn/PoolLayer.cpp",
-  "file": "/home/broesel233/projects/cnn/PoolLayer.cpp"
-},
-{
-  "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o CMakeFiles/cnn.dir/ConvolutionLayer.cpp.o -c /home/broesel233/projects/cnn/ConvolutionLayer.cpp",
-  "file": "/home/broesel233/projects/cnn/ConvolutionLayer.cpp"
-},
-{
-  "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o lib/CMakeFiles/knn.dir/network.cpp.o -c /home/broesel233/projects/cnn/lib/network.cpp",
+  "command": "/usr/bin/c++ -g -o lib/CMakeFiles/knn.dir/network.cpp.o -c /home/broesel233/projects/cnn/lib/network.cpp",
   "file": "/home/broesel233/projects/cnn/lib/network.cpp"
 },
 {
   "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o lib/CMakeFiles/knn.dir/mathhelper.cpp.o -c /home/broesel233/projects/cnn/lib/mathhelper.cpp",
+  "command": "/usr/bin/c++ -g -o lib/CMakeFiles/knn.dir/mathhelper.cpp.o -c /home/broesel233/projects/cnn/lib/mathhelper.cpp",
   "file": "/home/broesel233/projects/cnn/lib/mathhelper.cpp"
 },
 {
   "directory": "/home/broesel233/projects/cnn/build",
-  "command": "/usr/bin/c++ -I../lib -g -o lib/CMakeFiles/knn.dir/neuron.cpp.o -c /home/broesel233/projects/cnn/lib/neuron.cpp",
+  "command": "/usr/bin/c++ -g -o lib/CMakeFiles/knn.dir/neuron.cpp.o -c /home/broesel233/projects/cnn/lib/neuron.cpp",
   "file": "/home/broesel233/projects/cnn/lib/neuron.cpp"
 }
 ]

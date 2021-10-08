@@ -1,30 +1,29 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * File:   main.cpp
  * Author: broesel233
  *
  * Created on 5 September 2020, 17:10
  */
 
-#include <iostream>
+#define INPUT_DIMENSIONS 3
 
 #include "convnetwork.h"
 
-/*
- *
- */
 int main(int argc, char** argv) {
-
-    Convolutional conv = Convolutional({28,28,1},{10,1},{1,2},1,5,4,2,1);
+    
+    size_t num_repeats = 2;
+    size_t num_filters = 5;
+    size_t num_filter_size = 4;
+    size_t num_pool_size = 2;
+    size_t num_zero_padding = 1;
+    
+    // WARNING knn library still bugged, can only be trained once TODO fix
+    Convolutional conv = Convolutional({28,28,3},{10,1},{1,2},num_repeats,num_filters,num_filter_size,num_pool_size,num_zero_padding);
+    
+    conv.run_tests();
     while(getchar() != 0){
-        conv.run_tests();
+        
     }
 
     return 0;
 }
-

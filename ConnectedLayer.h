@@ -16,13 +16,16 @@
 
 #include <utility>
 
-#include "layer.h"
+#include "Layer.h"
 #include "lib/network.h"
+
+using namespace layer;
 
 class ConnectedLayer : public Layer{
 public:
     ConnectedLayer(){};
-    ConnectedLayer(size_t t_functiontype, std::vector<size_t> t_sizes, bool t_raw_output) : Layer(0,0,0,Layer::types::CONNECTED), m_functiontype(t_functiontype), m_net_in_size(t_sizes[0]){
+    ConnectedLayer(array_2d_t t_values,size_t t_functiontype, std::vector<size_t> t_sizes, bool t_raw_output) : 
+        Layer(t_values,Layer::types::CONNECTED),m_functiontype(t_functiontype), m_net_in_size(t_sizes[0]){
         std::vector<std::pair<int,int>> net_sizes;
         for(size_t layer_size:t_sizes){
             net_sizes.push_back(std::make_pair(layer_size,t_functiontype));
@@ -43,7 +46,12 @@ public:
     }
     size_t forward(){
         if(m_net == NULL || m_values[0].size() == 0) return 1;
-        m_net_output = m_net->predict(m_values[0]);
+        std::vector<float> net_inputs;
+        net_inputs.resize(m_values[0].size());
+        for(size_t i = 0;i < m_values[0].size();i++){
+            net_inputs.push_back(m_values[0][i]);
+        }
+        m_net_output = m_net->predict(net_inputs);
         return 0;
     };
     std::vector<float> get_net_output(){

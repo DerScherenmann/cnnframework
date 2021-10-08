@@ -1,15 +1,13 @@
 # ninja log v5
-0	841	1603399987834385348	CMakeFiles/cnn.dir/main.cpp.o	ffaf897c9eb09107
-1	18	1603400021730852154	CMakeFiles/cnn.dir/ActivationLayer.cpp.o	b7f1462e7ed2c8cd
-2	279	1603400021990850627	lib/CMakeFiles/knn.dir/mathhelper.cpp.o	d6a30c86cabd68da
-2	328	1603400022037517016	lib/CMakeFiles/knn.dir/neuron.cpp.o	ed4f7cdab49f8ab7
-1	328	1603400022040850331	CMakeFiles/cnn.dir/PoolLayer.cpp.o	2f93b90b8119cd03
-1	375	1603400022087516725	CMakeFiles/cnn.dir/layer.cpp.o	ba09efa00188e1bb
-1	379	1603400022090850036	CMakeFiles/cnn.dir/ConvolutionLayer.cpp.o	13911642dbb6d394
-1	436	1603400022147516369	CMakeFiles/cnn.dir/ConnectedLayer.cpp.o	7564be4afb99b442
-1	458	1603400022170849568	CMakeFiles/cnn.dir/filter.cpp.o	50371bbb7e6b546c
-0	925	1603400022634180173	CMakeFiles/cnn.dir/main.cpp.o	dae3f331fb672cdd
-2	1035	1603400022744179526	lib/CMakeFiles/knn.dir/network.cpp.o	2e11f4ecae6d9df2
-1035	1096	1603400022807512486	lib/libknn.a	6da47aa22a592005
-0	1424	1603400023134177231	CMakeFiles/cnn.dir/convnetwork.cpp.o	10f28fc3eb9bc9e
-1424	1524	1603400023234176641	cnn	fd64d57058b5bba4
+1	339	1633707139797515766	lib/CMakeFiles/knn.dir/mathhelper.cpp.o	63466ebbde7a9337
+1	390	1633707139847516224	lib/CMakeFiles/knn.dir/neuron.cpp.o	d8559af2eaf0a423
+1	1080	1633707140537522472	lib/CMakeFiles/knn.dir/network.cpp.o	3ce1d235c7aca661
+1080	1106	1633707140564189380	lib/libknn.a	6da47aa22a592005
+0	1471	1633707140927525992	CMakeFiles/convnetwork.dir/main.cpp.o	720093d6f595df86
+0	2024	1633707141477530895	CMakeFiles/convnetwork.dir/convnetwork.cpp.o	98f0948685c449fe
+2024	2107	1633707141564198332	convnetwork	413a4d55154d9b27
+1	1270	1633707334441023711	CMakeFiles/convnetwork.dir/convnetwork.cpp.o	98f0948685c449fe
+1270	1341	1633707334514356744	convnetwork	413a4d55154d9b27
+1	1444	1633707437823815071	CMakeFiles/convnetwork.dir/main.cpp.o	720093d6f595df86
+1	1904	1633707438283812253	CMakeFiles/convnetwork.dir/convnetwork.cpp.o	98f0948685c449fe
+1904	1988	1633707438370478387	convnetwork	413a4d55154d9b27
