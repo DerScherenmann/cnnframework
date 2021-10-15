@@ -12,30 +12,30 @@ CMake Binary=/usr/bin/cmake
 CMake Executable=/usr/bin/cmake
 Environment Profile=
 Extra Arguments=
-Install Directory=
+Install Directory=/usr/local
 Runtime=Host System
 
 [Launch]
-Launch Configurations=Launch Configuration 0
+Launch Configurations=Launch Configuration 1
 
-[Launch][Launch Configuration 0]
+[Launch][Launch Configuration 1]
 Configured Launch Modes=execute
 Configured Launchers=nativeAppLauncher
-Name=cnn
+Name=convnetwork
 Type=Native Application
 
-[Launch][Launch Configuration 0][Data]
+[Launch][Launch Configuration 1][Data]
 Arguments=
-Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x06\x00c\x00n\x00n)
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x06\x00c\x00n\x00n\x00\x00\x00\x16\x00c\x00o\x00n\x00v\x00n\x00e\x00t\x00w\x00o\x00r\x00k)
 Dependency Action=Build
 EnvironmentGroup=
-Executable=file:///home/broesel233/projects/cnn/build/convnetwork
+Executable=file:///home/broesel233/projects/cnn
 External Terminal=konsole --noclose --workdir %workdir -e %exe
-Kill Before Executing Again=65536
-Project Target=
+Kill Before Executing Again=4194304
+Project Target=cnn,convnetwork
 Use External Terminal=true
 Working Directory=
-isExecutable=true
+isExecutable=false
 
 [Project]
 VersionControlSupport=kdevgit
