@@ -1,5 +1,6 @@
-# Convolutional network library written in c++
+# cnnframework
+### Convolutional neural network framework
 
-### Work in progress
-## Depends on https://github.com/DerScherenmann/knnframework.git
+Work in progress
 
+LD_PRELOAD=/usr/lib/libmimalloc.so is 2ms faster ^^

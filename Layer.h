@@ -1,10 +1,4 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * File:   Layer.h
  * Author: broesel233
  *
@@ -13,29 +7,34 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+class Filter;
+
 #include "lib/mathhelper.h"
 #include <boost/multi_array.hpp>
-
-class Filter;
+#include <boost/scoped_ptr.hpp>
 
 namespace layer{
     
+//define multi array type
+typedef boost::multi_array<float, 2> array_2f;
+typedef boost::multi_array_types::index_range range_t;
+typedef boost::multi_array<size_t, 2> array_2t;
+
+typedef std::shared_ptr<Filter> fshared_ptr_t;
+typedef std::unique_ptr<Filter> funique_ptr_t;
+typedef boost::scoped_ptr<Filter> fscope_ptr_t;
+
 class Layer
 {
 public:
-    
-    //define multi array type
-    typedef boost::multi_array<float, 2> array_2d_t;
-    typedef boost::multi_array_types::index_range range_t;
     //index_gen for array type
-    array_2d_t::index_gen indices;
+    array_2f::index_gen indices;
     
-    Layer() {};
-    Layer(array_2d_t t_values,size_t t_type) : m_values(t_values), m_width(t_values.size()),m_height(t_values[0].size()) ,m_type(t_type)
+    Layer(array_2f t_values,size_t t_type) : m_values(t_values), m_width(t_values.size()),m_height(t_values[0].size()) ,m_type(t_type)
     {
-        for(size_t i = 0; i<m_width; i++)
+        for(size_t i = 0;i < m_width;i++)
         {
-            for(size_t j = 0; j < m_height; j++)
+            for(size_t j = 0;j < m_height;j++)
             {
                 m_values[i][j] = math.rng();
             }
@@ -50,6 +49,9 @@ public:
     };
     enum functiontype{
         SWISH = 0,SIGMOID,RELU
+    };
+    enum operation {
+        MAX = 0,AVERAGE
     };
 
     virtual size_t get_width()
@@ -68,45 +70,50 @@ public:
     {
         return m_type;
     }
-    virtual array_2d_t get_values()
+    virtual array_2f get_values()
     {
         return m_values;
     }
-    virtual size_t set_values(array_2d_t t_input_values)
+    virtual size_t set_values(array_2f t_input_values)
     {
+        m_values.resize(boost::extents[t_input_values.size()][t_input_values[0].size()]);
         m_values = t_input_values;
         return 0;
     }
-    virtual size_t set_deltas(std::vector<std::vector<float>> &t_deltas){
+    virtual size_t set_deltas(array_2f &t_deltas){
+        m_deltas.resize(boost::extents[t_deltas.size()][t_deltas[0].size()]);
         m_deltas = t_deltas;
         return 0;
     }
-    virtual std::vector<std::vector<float>> get_deltas(){
+    virtual array_2f get_deltas(){
         return m_deltas;
     }
+    virtual size_t set_filter(fshared_ptr_t t_filter){}
+    virtual fshared_ptr_t get_filter(){}
 
     //declare some virtual functions for base classes to avoid dynamic casting
     virtual std::vector<float> get_net_output(){};
-    virtual std::vector<float> train(std::pair<std::vector<float>,std::vector<float>> &t_training_data,float t_learning_rate,float t_momentum){};
+    virtual std::vector<float> train(std::vector<float> &t_training_data,float t_learning_rate,float t_momentum){};
     virtual size_t forward(){};
-    virtual std::vector<std::vector<std::pair<float, std::pair<size_t,size_t>>>> get_org_index(){}
-    virtual std::vector<Filter> get_filters(){};
+    virtual array_2t get_input_indices(){}
     virtual size_t make_padding(){};
-    virtual size_t pool(std::vector<std::vector<float>> &t_input){};
-    virtual size_t calculate(std::vector<std::vector<float>> &inputValues){};
+    virtual bool has_padding(){};
+    virtual size_t pool(array_2f t_input){};
+    virtual size_t calculate(array_2f t_input){};
     virtual size_t get_in_size(){};
+    virtual size_t backwards_propagation(array_2f t_layer_values){};
 
 protected:
-    //workaround because array_view has no constructor; essentially the subarray; is input and output during forward pass;
-    array_2d_t m_values;
+    array_2f m_values;
     //store deltas
-    std::vector<std::vector<float>> m_deltas;
+    array_2f m_deltas;
     size_t m_width = 0;
     size_t m_height = 0;
     size_t m_zero_padding = 0;
+    
     Math math;
 private:
-    size_t m_type;
+    size_t m_type = 0;
 };
 }
 #endif

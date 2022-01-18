@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "Layer.h"
-#include "filter.h"
+#include "kernel.h"
 
 using namespace layer;
 
@@ -27,39 +27,10 @@ public:
     /**
      *
      */
-    ConvolutionLayer(){};
-    ConvolutionLayer(array_2d_t t_values,size_t t_zero_padding,size_t t_stride,size_t t_num_filters, size_t t_filter_sizes,size_t t_function_type) :
-                        Layer(t_values,Layer::types::CONV), m_num_filters(t_num_filters), m_filter_sizes(t_filter_sizes), m_stride(t_stride) {
-
+    ConvolutionLayer(array_2f t_values,size_t t_zero_padding) :
+                        Layer(t_values,Layer::types::CONV) {
         m_zero_padding = t_zero_padding;
-        m_filters.reserve(m_num_filters);
-        for(size_t i = 0;i < m_num_filters;i++){
-            Filter k = Filter(m_filter_sizes,m_stride,t_function_type);
-            m_filters.push_back(k);
-        }
-
-//        //fucking retarded weights are in filter
-//        //init random weigths
-//        for(size_t i = 0;i < t_width;i++){
-//            std::vector<float> column;
-//            for(size_t j = 0;j < t_height;j++){
-//                column.push_back(math.rng());
-//            }
-//            m_weights.push_back(column);
-//        }
-//        //zero old changes so first time is always 0
-//        for(size_t i = 0;i < t_width;i++){
-//            std::vector<float> column;
-//            for(size_t j = 0;j < t_height;j++){
-//                column.push_back(0);
-//            }
-//            old_changes.push_back(column);
-//        }
     };
-
-    std::vector<Filter> get_filters(){
-        return m_filters;
-    }
 
     //ConvolutionLayer(const ConvolutionLayer& orig) : Layer(orig) {};
     //virtual ~ConvolutionLayer(){};
@@ -72,15 +43,15 @@ public:
         m_width = m_values.size()+2*m_zero_padding;
         m_height = m_values[0].size()+2*m_zero_padding;
         
-        boost::array<array_2d_t::index, 2> shape_padding = {{ (long) m_width, (long) m_height }};
-        array_2d_t array_padding(shape_padding);
+        boost::array<array_2f::index, 2> shape_padding = {{ (long) m_width, (long) m_height }};
+        array_2f array_padding(shape_padding);
         
         if(m_zero_padding != 0){
             for(size_t num_padding = 0;num_padding < m_zero_padding;num_padding++){
-                for(size_t i = 0;i < array_padding.size();i++){
-                    for(size_t j = 0;j < array_padding[0].size();j++){
+                for(size_t i = 0;i < m_width;i++){
+                    for(size_t j = 0;j < m_height;j++){
                         //padding
-                        if(i < m_zero_padding || i+1 > array_padding.size()-m_zero_padding || j < m_zero_padding || j+1 > array_padding[0].size()-m_zero_padding){
+                        if(i < m_zero_padding || i+1 > m_width-m_zero_padding || j < m_zero_padding || j+1 > m_height-m_zero_padding){
                             array_padding[i][j] = 0;
                         }else{
                             //add m_values to array
@@ -90,20 +61,74 @@ public:
                 }
             }
         }
-        m_values.resize(boost::extents[array_padding.size()][array_padding[0].size()]);
+        m_values.resize(boost::extents[m_width][m_height]);
         m_values = array_padding;
+        m_has_padding = true;
+
+        return 0;
+    }
+
+    size_t backwards_propagation(array_2f t_current_layer){
+        
+        array_2f deltas;
+        // TODO operator overloading in Filter class
+        deltas.resize(boost::extents[m_filter->get_output_width(m_deltas.size()+2)][m_filter->get_output_height(m_deltas.size()+2)]);
+        
+        for(size_t i = 0;i < m_filter->size();i++){
+            array_2f deltas_kernel = m_filter->get_kernels()[i]->calculate_deltas(m_deltas);
+            for(size_t j = 0;j < deltas_kernel.size();j++){
+                for(size_t k = 0;k < deltas_kernel[0].size();k++){
+                    deltas[j][k] += deltas_kernel[j][k];
+                }
+            }
+        }
+        for(size_t i = 0;i < t_current_layer.size();i++){
+            for(size_t j = 0;j < t_current_layer[0].size();j++){
+                t_current_layer[i][j] *= m_filter->get_kernels()[0]->actPrime(t_current_layer[i][j]);
+            }
+        }
+
+        m_deltas.resize(boost::extents[deltas.size()][deltas[0].size()]);
+
+        // std::cout << deltas[0].size() << std::endl;
+        // std::cout << t_current_layer[0].size() << std::endl;
+        // std::cout << m_deltas.size() << std::endl;
         
         return 0;
     }
-    
+
+    bool has_padding(){
+        return m_has_padding;
+    }
     size_t get_type(){
         return Layer::CONV;
     }
+    size_t set_filter(fshared_ptr_t t_filter){
+        m_filter = t_filter;
+        return 0;
+    }
+    fshared_ptr_t get_filter(){
+        return m_filter;
+    }
 private:
-    size_t m_num_filters;
-    size_t m_filter_sizes;
-    size_t m_stride;
-    std::vector<Filter> m_filters;
+    // Holds Filter of following convolutional layer
+    fshared_ptr_t m_filter;
+    bool m_has_padding;
+
+    typedef boost::multi_array<float, 3> array_3f;
+
+    array_2f flip(array_2f t_input_values){
+        array_2f temp;
+        temp.resize(boost::extents[t_input_values.size()][t_input_values[0].size()]);
+        //flip input
+        for(size_t i = 0;i < t_input_values.size();i++){
+            for(size_t j = 0;j < t_input_values[0].size();j++){
+                float value = t_input_values[i][j];
+                temp[t_input_values.size()-1-i][t_input_values[0].size()-1-j] = value;
+            }
+        }
+        return temp;
+    }
 };
 
 #endif /* CONVOLUTIONLAYER_H */

@@ -249,15 +249,18 @@ std::vector<Neuron> Network::feedForward(std::vector<float> &testData) {
 
 	//apply testData to Input Layer
 	for (size_t i = 0; i < neuronLayers[0].size(); i++) {
-            if(neuronLayers[0][i].type == Neuron::NEURON)
-                neuronLayers[0][i].activation = testData[i];
+        if(neuronLayers[0][i].type == Neuron::NEURON){
+			// Idk what to do for input neurons
+			neuronLayers[0][i].sum = testData[i];
+			neuronLayers[0][i].activation = testData[i];
+		}
 	}
 
 	for (size_t i = 1; i < neuronLayers.size(); i++) {
-            for (size_t j = 0; j < neuronLayers[i].size(); j++) {
-		if (neuronLayers[i][j].type == Neuron::NEURON)
-			neuronLayers[i][j].calculateActivation(neuronLayers[i - 1], weights[i - 1][j]);
-            }
+        for (size_t j = 0; j < neuronLayers[i].size(); j++) {
+			if (neuronLayers[i][j].type == Neuron::NEURON)
+				neuronLayers[i][j].calculateActivation(neuronLayers[i - 1], weights[i - 1][j]);
+        }
 	}
 	//std::cout << neuronLayers[numLayers - 1][0].activation << std::endl;
 	//return output
@@ -273,7 +276,8 @@ std::vector<float> Network::predict(std::vector<float> &testData) {
 	for (Neuron neuron : output) {
 		values.push_back(neuron.activation);
 	}
-        output.clear();
+    output.clear();
+	
 	return values;
 }
 
@@ -301,6 +305,20 @@ float Network::backPropMomentum(float &deltaCurrent, float &activationBefore, fl
 /*
 *	Error function(s) Note: Error is also found as Cost! These are the same things
 */
+// squared error
+float Network::calcSQE(std::vector<float> &ideals, std::vector<Neuron> &outputNeurons) {
+
+	float error = 0;
+
+	for (size_t i = 0; i < ideals.size(); i++) {
+		error += pow((ideals[i] - outputNeurons[i].activation), 2);
+	}
+	//this is the mean squared error
+	error = 0.5 * error;
+
+	return error;
+}
+
 //mean quared error
 float Network::calcMSE(std::vector<std::pair<std::vector<float>, std::vector<float>>> &trainingData, std::vector<std::vector<Neuron>> &outputNeurons) {
 
@@ -521,16 +539,16 @@ std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector
     momentum = t_momentum;
     //returned deltas of input layer
     std::vector<float> deltas;
-
+	
     //TODO improve performance of forward propagation
-    //also set activations
-    //std::vector<Neuron> output = feedForward(pair.first);
+    // Set input activations
+    feedForward(pair.first);
 
     //secondly we need to calculate delta for each neuron in the network (except input neurons), we are starting from behind
     //WARNING: changed to calculate input neurons as well after implementation into CNN
     for (int i = neuronLayers.size() - 1; i >= 0; i--) {
         //neuronLayers[i].size()-1 because we dont want to calculate for the bias
-        for (size_t j = 0; j < neuronLayers[i].size(); j++) {
+        for (size_t j = 0; j < neuronLayers[i].size()-1; j++) {
             //the output layer uses a different function
             if (i == neuronLayers.size() - 1) {
                 //delta = f'(sum) * (o - t)
@@ -540,8 +558,9 @@ std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector
                 float sum = 0;
                 //neuronLayers[i+1][k].delta <- delta from layer before -1 bc we dont want to calculate for the bias
                 for (size_t k = 0; k < neuronLayers[i+1].size(); k++) {
-                    if(neuronLayers[i + 1][k].type == Neuron::NEURON)
-                        sum += neuronLayers[i+1][k].delta * weights[i][k][j];
+                    if(neuronLayers[i + 1][k].type == Neuron::NEURON){
+						sum += neuronLayers[i+1][k].delta * weights[i][k][j];
+					}             
                 }
                 //delta = f'(sum)*sum(prevDeltas*weights)
                 neuronLayers[i][j].delta = neuronLayers[i][j].actPrime(neuronLayers[i][j].sum) * sum;
@@ -555,7 +574,7 @@ std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector
     //std::vector<std::future<void>> threads;
     //threads.reserve(neuronLayers.size());
 
-    //this is ineffective
+    //this could be done in extra thread because cnn might be slower
     //auto calculateChange = std::async([=] {
 
     //we now can calculate the weights
@@ -578,6 +597,6 @@ std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector
     //threads.push_back(std::move(calculateChange));
 
     //for (std::future<void> &thread : threads) thread.get();
-
+	//for(float delta:deltas) std::cout << delta;
     return deltas;
  }

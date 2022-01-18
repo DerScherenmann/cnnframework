@@ -20,22 +20,25 @@ using namespace layer;
 
 class ActivationLayer : public Layer {
 public:
-    size_t typeFunction;
 
-    ActivationLayer(){};
-    ActivationLayer(array_2d_t t_values,size_t functiontype) : Layer(t_values,Layer::ACT), typeFunction(functiontype){
+    ActivationLayer(array_2f t_values,size_t t_function_t) : Layer(t_values,Layer::ACT), m_function_t(t_function_t){
 
     };
     //ActivationLayer(const ActivationLayer& orig) : Layer(orig) {};
     virtual ~ActivationLayer(){};
 
-    size_t calculate(array_2d_t inputValues){
+    size_t calculate(array_2f t_input){
 
-        for(size_t i = 0;i < m_width;i++){
-            for(size_t j = 0;j < m_height;j++){
-                m_values[i][j] = act(inputValues[i][j]);
+        m_width = t_input.size();
+        m_height = t_input[0].size();
+
+        m_values.resize(boost::extents[t_input.size()][t_input[0].size()]);
+        for(size_t i = 0;i < t_input.size();i++){
+            for(size_t j = 0;j < t_input[0].size();j++){
+                m_values[i][j] = act(t_input[i][j]);
             }
         }
+
         return 0;
     }
 
@@ -46,9 +49,11 @@ public:
         return Layer::ACT;
     }
 private:
+    size_t m_function_t;
+
     float act(float x){
 
-        switch(typeFunction){
+        switch(m_function_t){
             case SWISH:
                 x = math.swish(x);
                 break;

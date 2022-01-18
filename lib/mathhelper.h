@@ -7,6 +7,7 @@ class Math {
 
         float rng();
         float rand_in_range(float min, float max);
+        size_t rand_bias(size_t min,size_t max);
 
         /**********************************************************************/
         /*** sigmoid.c:  This code contains the function routine            ***/

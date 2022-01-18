@@ -42,6 +42,7 @@ private:
     std::vector<Neuron> feedForward(std::vector<float>& testData);
     float backProp(float &delta, float &activation);
     float backPropMomentum(float &deltaCurrent, float &activationBefore, float &oldChange);
+    float calcSQE(std::vector<float> &ideals, std::vector<Neuron> &outputNeurons);
     float calcMSE(std::vector<std::pair<std::vector<float>, std::vector<float>>> &trainingData, std::vector<std::vector<Neuron>> &outputNeurons);
     float calcRMSE(std::vector<std::pair<std::vector<float>, std::vector<float>>> &trainingData, std::vector<std::vector<Neuron>> &outputNeurons);
 

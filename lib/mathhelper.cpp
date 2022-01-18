@@ -16,3 +16,6 @@ float Math::rand_in_range(float min, float max) {
     return std::uniform_real_distribution<float>{min, max}(generator);
 }
 
+size_t Math::rand_bias(size_t min,size_t max){
+    return std::uniform_int_distribution<size_t>{min, max}(generator);
+}
