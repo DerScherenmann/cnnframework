@@ -116,7 +116,7 @@ int Network::train(std::vector<std::pair<std::vector<float>, std::vector<float>>
 		//benchmarking
 		auto startEpoch = std::chrono::high_resolution_clock::now();
 
-		std::cout << "Epoch: " << epoch << std::endl;
+		//std::cout << "Epoch: " << epoch << std::endl;
 
 		for (std::pair<std::vector<float>, std::vector<float>> &pair : trainingData) {
 
@@ -229,8 +229,8 @@ int Network::train(std::vector<std::pair<std::vector<float>, std::vector<float>>
 		if (error < 0.09) break;
 	}
 
-	std::cout << "Average time for one epoch: " << averageTimeEpoch / 100 << std::endl;
-	std::cout << "One training data step: " << averageTimeEpoch / 100 / 10000 << std::endl;
+	//std::cout << "Average time for one epoch: " << averageTimeEpoch / 100 << std::endl;
+	//std::cout << "One training data step: " << averageTimeEpoch / 100 / 10000 << std::endl;
 
         //zero old changes
 	for (int i = 0; i < oldchange.size(); i++) {
