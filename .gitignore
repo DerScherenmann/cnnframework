@@ -3,6 +3,7 @@ apidocs
 .directory
 .kdev4
 build
+release
 *~
 *.patch
 *.diff
