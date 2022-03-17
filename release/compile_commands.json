@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/home/broesel233/projects/cnnframework/release",
+  "command": "/usr/bin/c++ -Os -DNDEBUG -o CMakeFiles/convnetwork.dir/main.cpp.o -c /home/broesel233/projects/cnnframework/main.cpp",
+  "file": "/home/broesel233/projects/cnnframework/main.cpp"
+},
+{
+  "directory": "/home/broesel233/projects/cnnframework/release",
+  "command": "/usr/bin/c++ -Os -DNDEBUG -o CMakeFiles/convnetwork.dir/convnetwork.cpp.o -c /home/broesel233/projects/cnnframework/convnetwork.cpp",
+  "file": "/home/broesel233/projects/cnnframework/convnetwork.cpp"
+},
+{
+  "directory": "/home/broesel233/projects/cnnframework/release",
+  "command": "/usr/bin/c++ -Os -DNDEBUG -o lib/CMakeFiles/knn.dir/network.cpp.o -c /home/broesel233/projects/cnnframework/lib/network.cpp",
+  "file": "/home/broesel233/projects/cnnframework/lib/network.cpp"
+},
+{
+  "directory": "/home/broesel233/projects/cnnframework/release",
+  "command": "/usr/bin/c++ -Os -DNDEBUG -o lib/CMakeFiles/knn.dir/mathhelper.cpp.o -c /home/broesel233/projects/cnnframework/lib/mathhelper.cpp",
+  "file": "/home/broesel233/projects/cnnframework/lib/mathhelper.cpp"
+}
+]

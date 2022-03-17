@@ -51,7 +51,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
             batch_error += data_error;
 
             // Start calculating backwards, connected layer already handled in knn lib
-            std::cout << deltas.size() << std::endl;
+            // std::cout << deltas.size() << std::endl;
 
             // for(size_t i = 0;i < m_layers.size();i++){
             //     std::cout << m_layers[i].size() << "x" << m_layers[i][0]->get_type() << std::endl;
@@ -94,8 +94,9 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                             
                             // If last layer before connected layer, don't get filter because deltas are obtained from mlp
                             if(i != m_layers.size()-2){
-                                // layer::fshared_ptr_t f = m_filters[index_filter-1][num_layer];
-                                // m_layers[i][num_layer]->set_filter(f);
+                                // Magic
+                                layer::fshared_ptr_t f = m_filters[index_filter-1][num_layer];
+                                m_layers[i][num_layer]->set_filter(f);
                                 
                                 array_2f deltas = m_layers[i+1][num_layer]->get_deltas();
                                 m_layers[i][num_layer]->set_deltas(deltas);
@@ -113,6 +114,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                             m_layers[i][num_layer]->backwards_propagation(m_layers[i-1][num_layer]->get_values());
                             break;
                         }
+                        //TODO this may be wrong 
                         // Just get deltas from previous layer and apply them
                         case(Layer::ACT):{
                             array_2f deltas = (i == (m_layers.size()-2)) ? m_layers[i][num_layer]->get_deltas() : m_layers[i+1][num_layer]->get_deltas();
@@ -124,7 +126,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
             }
             std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double,std::milli> time_span = std::chrono::duration_cast<std::chrono::duration<double,std::milli>>(t2 - t1);
-            std::cout << "Time for backprop: " << time_span.count() << "ms" << std::endl;
+            //std::cout << "Time for backprop: " << time_span.count() << "ms" << std::endl;
 
             // Change Weights; Exclude input and connected layer
             for(size_t i = 1;i < m_layers.size()-1;i++){
@@ -282,8 +284,8 @@ size_t Convolutional::initialize(struct_training_data &t_data){
             m_architecture.insert(m_architecture.begin()+i+1,Layer::ACT);
         }
     }
-
-    boost::progress_display layers_progress(m_architecture.size()+1);
+    
+    boost::timer::progress_display layers_progress(m_architecture.size()+1);
 
     // Initialize input layers with convolutional layer so we can add zero padding
     std::vector<Layer*> input_layers;
@@ -328,6 +330,11 @@ size_t Convolutional::initialize(struct_training_data &t_data){
                 // Can't be used because in 2d arrays all rows must have the same size
                 //m_filters.resize(boost::extents[num_conv_layers][m_num_filters[index]]);
                 m_filters[index] = std::vector<fshared_ptr_t>();
+                
+                // The program will horribly die here with and bad_alloc error if there are more convolutional layers than filters defined
+                if(m_num_filters.size() < num_conv_layers){
+                    throw std::invalid_argument("Convolutional layer " + std::to_string(index+1) + " has no defined filters!");
+                }
                 m_filters[index].resize(m_num_filters[index]);
                 
                 // Get depth of last layer slice

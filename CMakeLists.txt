@@ -11,4 +11,4 @@ add_executable( ${PROJECT_NAME} ${SOURCE_FILES} )
 #links lib
 target_link_libraries( ${PROJECT_NAME} knn)
 #RUNTIME DESTINATION bin
-install(TARGETS convnetwork)
+#install(TARGETS convnetwork)

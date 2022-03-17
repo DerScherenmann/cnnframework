@@ -1,0 +1,10 @@
+# ninja log v5
+0	353	1642871522691313823	lib/CMakeFiles/knn.dir/mathhelper.cpp.o	cbc575230bf477dc
+1	1169	1642871597004226462	lib/CMakeFiles/knn.dir/network.cpp.o	531d045ea4ccf685
+1169	1191	1642871597024226357	lib/libknn.a	b325f59c5fdd7e33
+2	3249	1642872939888105051	CMakeFiles/convnetwork.dir/convnetwork.cpp.o	fa50aa694ed7aad9
+2	1843	1642872959858092046	CMakeFiles/convnetwork.dir/main.cpp.o	a94d1797caf157bd
+1843	1878	1642872959894758689	convnetwork	e96b018bf62d0a52
+1	1892	1642873921200945992	CMakeFiles/convnetwork.dir/main.cpp.o	a94d1797caf157bd
+1	3236	1642873922544278763	CMakeFiles/convnetwork.dir/convnetwork.cpp.o	fa50aa694ed7aad9
+3236	3271	1642873922577612081	convnetwork	e96b018bf62d0a52

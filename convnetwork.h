@@ -11,8 +11,7 @@
  * Created on 5 September 2020, 21:02
  */
 
-#ifndef CONVNETWORK_H
-#define CONVNETWORK_H
+#pragma once
 
 #define INPUT_DIMENSIONS 3
 
@@ -23,7 +22,7 @@
 #include <iostream>
 #include <iomanip>
 #include <boost/multi_array.hpp>
-#include <boost/progress.hpp>
+#include <boost/timer/progress_display.hpp>
 #include <boost/ptr_container/ptr_container.hpp>
 
 #include "Layer.h"
@@ -39,10 +38,10 @@ using namespace layer;
 
 /**
  * @brief Constructs a convolutional neural network
- * @param vector<size_t> that holds settings for connected layer network
- * @param vector<size_t> that holds architecture of repeated layers
- * @param size_t times architecture should be repeated
+ * @param vector<size_t> that holds settings for connected layer network (size of hidden layers and output layers)
+ * @param vector<size_t> that holds architecture of repeated layers (Layer::types)
  * @param size_t of filters in conv layer
+ * @param size_t filter size
  * @param size_t pool size
  * @param size_t zero padding
 */
@@ -63,9 +62,13 @@ public:
 
     typedef struct struct_training_data {
         array_3f image_data;
+        // TODO rename this maybe
         std::vector<float> corrrect_outputs;
     } struct_training_data;
     
+    /*
+     * TODO compare float and double as soon as the network ist complete
+     */
     Convolutional(std::vector<size_t> t_connected_matrix_size,std::vector<size_t> t_architecture,std::vector<size_t> t_num_filters,std::vector<size_t> t_filters_size,size_t t_pools_size,size_t t_zero_padding) :
          m_connected_matrix_size(t_connected_matrix_size),m_architecture(t_architecture),m_num_filters(t_num_filters),  m_filters_size(t_filters_size), m_pools_size(t_pools_size), m_zero_padding(t_zero_padding)
     {   
@@ -109,6 +112,14 @@ public:
      * @return size_t on success
      */
     size_t train(std::vector<struct_training_data> &t_training_data,size_t t_funcion_type,float t_learning_rate,float t_momentum, size_t t_epochs, size_t t_stride_filters,size_t t_stride_pools);
+    
+    /**
+     * @brief Feed forward through network
+     * @param struct_training_data training data
+     * @return std::pair<std::vector<float>,std::vector<float>> vector of ouputs,deltas
+     */
+    std::pair<std::vector<float>,std::vector<float>> feed_forward(struct_training_data &t_data);
+    
     size_t run_tests();
     
 private:
@@ -121,7 +132,7 @@ private:
     float m_momentum;
     size_t m_epochs;
     size_t m_zero_padding;
-    // TODO make this a pointer and enable custom submittable functions
+    // TODO make this a pointer and enable custom function submissions
     size_t m_function_type;
     bool m_test;
     size_t m_stride_pool;
@@ -134,12 +145,6 @@ private:
     Math math;
     
     /**
-     * @brief Feed forward through network
-     * @param struct_training_data training data
-     * @return std::pair<std::vector<float>,std::vector<float>> vector of ouputs,deltas
-     */
-    std::pair<std::vector<float>,std::vector<float>> feed_forward(struct_training_data &t_data);
-    /**
      * @brief Initialize network
      * @param struct_training_data training data sample
      * @return std::vector<float> ouputs
@@ -149,6 +154,4 @@ private:
     std::vector<std::vector<Layer*>> m_layers;
     
 };
-
-#endif /* CONVNETWORK_H */
 

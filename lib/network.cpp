@@ -340,7 +340,7 @@ float Network::calcMSE(std::vector<std::pair<std::vector<float>, std::vector<flo
 	}
 	//this is the mean squared error
 	error = error / ideals.size();
-	std::cout << "Error: " << error << std::endl;
+	//std::cout << "Error: " << error << std::endl;
 
 	return error;
 }
@@ -368,9 +368,9 @@ float Network::calcRMSE(std::vector<std::pair<std::vector<float>, std::vector<fl
 	error = error / ideals.size();
 	//this is the root mean squared error
 	error = sqrt(error);
-	std::cout << "Error: " << error << std::endl;
+	//std::cout << "Error: " << error << std::endl;
 
-        ideals.clear();
+    ideals.clear();
 
 	return error;
 }

@@ -42,14 +42,22 @@ public:
     };
     //Layer(const Layer& orig){};
     virtual ~Layer() {};
-
+    /*
+     * Makes layer types acessible
+     */
     enum types
     {
         INPUT = 0,CONV,POOL,ACT,CONNECTED,OUTPUT
     };
+    /*
+     * Determines wich function should be used inside Convolutional and activation layer
+     */
     enum functiontype{
         SWISH = 0,SIGMOID,RELU
     };
+    /*
+     * Determines pooling operation (Pooling layers only)
+     */
     enum operation {
         MAX = 0,AVERAGE
     };
@@ -88,20 +96,20 @@ public:
     virtual array_2f get_deltas(){
         return m_deltas;
     }
-    virtual size_t set_filter(fshared_ptr_t t_filter){}
-    virtual fshared_ptr_t get_filter(){}
+    virtual size_t set_filter(fshared_ptr_t t_filter) = 0;
+    virtual fshared_ptr_t get_filter() = 0;
 
     //declare some virtual functions for base classes to avoid dynamic casting
-    virtual std::vector<float> get_net_output(){};
-    virtual std::vector<float> train(std::vector<float> &t_training_data,float t_learning_rate,float t_momentum){};
-    virtual size_t forward(){};
-    virtual array_2t get_input_indices(){}
-    virtual size_t make_padding(){};
-    virtual bool has_padding(){};
-    virtual size_t pool(array_2f t_input){};
-    virtual size_t calculate(array_2f t_input){};
-    virtual size_t get_in_size(){};
-    virtual size_t backwards_propagation(array_2f t_layer_values){};
+    virtual std::vector<float> get_net_output() = 0;
+    virtual std::vector<float> train(std::vector<float> &t_training_data,float t_learning_rate,float t_momentum) = 0;
+    virtual size_t forward() = 0;
+    virtual array_2t get_input_indices() = 0;
+    virtual size_t make_padding() = 0;
+    virtual bool has_padding() = 0;
+    virtual size_t pool(array_2f t_input) = 0;
+    virtual size_t calculate(array_2f t_input) = 0;
+    virtual size_t get_in_size() = 0;
+    virtual size_t backwards_propagation(array_2f t_layer_values) = 0;
 
 protected:
     array_2f m_values;

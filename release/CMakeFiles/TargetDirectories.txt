@@ -1,0 +1,6 @@
+/home/broesel233/projects/cnnframework/release/CMakeFiles/convnetwork.dir
+/home/broesel233/projects/cnnframework/release/CMakeFiles/edit_cache.dir
+/home/broesel233/projects/cnnframework/release/CMakeFiles/rebuild_cache.dir
+/home/broesel233/projects/cnnframework/release/lib/CMakeFiles/knn.dir
+/home/broesel233/projects/cnnframework/release/lib/CMakeFiles/edit_cache.dir
+/home/broesel233/projects/cnnframework/release/lib/CMakeFiles/rebuild_cache.dir

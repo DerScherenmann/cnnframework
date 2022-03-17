@@ -22,6 +22,8 @@
 #include <cstdint>
 #include <memory>
 
+#include <filesystem>
+
 namespace cifar {
 
 /*!
@@ -77,7 +79,8 @@ void read_cifar10_file(Images& images, Labels& labels, const std::string& path, 
     if(limit && limit <= images.size()){
         return;
     }
-
+    //std::cout << "Current path is " << std::filesystem::current_path() << '\n';
+    
     std::ifstream file;
     file.open(path, std::ios::in | std::ios::binary | std::ios::ate);
 
@@ -188,7 +191,7 @@ void read_cifar10_file_categorical(Images& images, Labels& labels, const std::st
 
     std::ifstream file;
     file.open(path, std::ios::in | std::ios::binary | std::ios::ate);
-
+    
     if (!file) {
         std::cout << "Error opening file: " << path << std::endl;
         return;

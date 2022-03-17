@@ -100,10 +100,10 @@ public:
     bool has_padding(){
         return m_has_padding;
     }
-    size_t get_type(){
+    size_t get_type () override {
         return Layer::CONV;
     }
-    size_t set_filter(fshared_ptr_t t_filter){
+    size_t set_filter(fshared_ptr_t t_filter) override {
         m_filter = t_filter;
         return 0;
     }
