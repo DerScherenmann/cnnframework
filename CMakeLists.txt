@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 
 project(convnetwork)
 
-set(SOURCE_FILES main.cpp convnetwork.cpp)
+add_subdirectory(src)
 
-add_subdirectory(lib)
+enable_testing()
+add_subdirectory(test)
 
-add_executable( ${PROJECT_NAME} ${SOURCE_FILES} )
-
+add_executable( ${PROJECT_NAME} main.cpp)
 #links lib
-target_link_libraries( ${PROJECT_NAME} knn)
-#RUNTIME DESTINATION bin
-#install(TARGETS convnetwork)
+target_link_libraries( ${PROJECT_NAME} knn cnn)

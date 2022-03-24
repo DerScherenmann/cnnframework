@@ -7,7 +7,7 @@
 
 #define INPUT_DIMENSIONS 3
 
-#include "convnetwork.h"
+#include "src/convnetwork.h"
 
 //read https://www.jefkine.com/general/2016/09/05/backpropagation-in-convolutional-neural-networks/
 int main(int argc, char** argv) {
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
     
     //train
     // TODO delta and gradient calculation not working
-    conv.train(dummy_training,Convolutional::SIGMOID,0.02,0.01,10,1,1);
+    conv.train(dummy_training,Convolutional::SIGMOID,0.05,0.1,100,1,1);
     
     while(getchar() != 0){
         size_t test_number = dist100(rng);

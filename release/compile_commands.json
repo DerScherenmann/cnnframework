@@ -1,22 +1,27 @@
 [
 {
-  "directory": "/home/broesel233/projects/cnnframework/release",
-  "command": "/usr/bin/c++ -Os -DNDEBUG -o CMakeFiles/convnetwork.dir/main.cpp.o -c /home/broesel233/projects/cnnframework/main.cpp",
-  "file": "/home/broesel233/projects/cnnframework/main.cpp"
+  "directory": "/home/derscherenmann/programming/cnnframework/release",
+  "command": "/usr/bin/c++ -O2 -g -DNDEBUG -o CMakeFiles/convnetwork.dir/main.cpp.o -c /home/derscherenmann/programming/cnnframework/main.cpp",
+  "file": "/home/derscherenmann/programming/cnnframework/main.cpp"
 },
 {
-  "directory": "/home/broesel233/projects/cnnframework/release",
-  "command": "/usr/bin/c++ -Os -DNDEBUG -o CMakeFiles/convnetwork.dir/convnetwork.cpp.o -c /home/broesel233/projects/cnnframework/convnetwork.cpp",
-  "file": "/home/broesel233/projects/cnnframework/convnetwork.cpp"
+  "directory": "/home/derscherenmann/programming/cnnframework/release",
+  "command": "/usr/bin/c++ -O2 -g -DNDEBUG -o src/CMakeFiles/cnn.dir/convnetwork.cpp.o -c /home/derscherenmann/programming/cnnframework/src/convnetwork.cpp",
+  "file": "/home/derscherenmann/programming/cnnframework/src/convnetwork.cpp"
 },
 {
-  "directory": "/home/broesel233/projects/cnnframework/release",
-  "command": "/usr/bin/c++ -Os -DNDEBUG -o lib/CMakeFiles/knn.dir/network.cpp.o -c /home/broesel233/projects/cnnframework/lib/network.cpp",
-  "file": "/home/broesel233/projects/cnnframework/lib/network.cpp"
+  "directory": "/home/derscherenmann/programming/cnnframework/release",
+  "command": "/usr/bin/c++ -O2 -g -DNDEBUG -o src/lib/CMakeFiles/knn.dir/network.cpp.o -c /home/derscherenmann/programming/cnnframework/src/lib/network.cpp",
+  "file": "/home/derscherenmann/programming/cnnframework/src/lib/network.cpp"
 },
 {
-  "directory": "/home/broesel233/projects/cnnframework/release",
-  "command": "/usr/bin/c++ -Os -DNDEBUG -o lib/CMakeFiles/knn.dir/mathhelper.cpp.o -c /home/broesel233/projects/cnnframework/lib/mathhelper.cpp",
-  "file": "/home/broesel233/projects/cnnframework/lib/mathhelper.cpp"
+  "directory": "/home/derscherenmann/programming/cnnframework/release",
+  "command": "/usr/bin/c++ -O2 -g -DNDEBUG -o src/lib/CMakeFiles/knn.dir/mathhelper.cpp.o -c /home/derscherenmann/programming/cnnframework/src/lib/mathhelper.cpp",
+  "file": "/home/derscherenmann/programming/cnnframework/src/lib/mathhelper.cpp"
+},
+{
+  "directory": "/home/derscherenmann/programming/cnnframework/release",
+  "command": "/usr/bin/c++ -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -DBOOST_TEST_DYN_LINK -DBOOST_UNIT_TEST_FRAMEWORK_DYN_LINK -DBOOST_UNIT_TEST_FRAMEWORK_NO_LIB -I/home/derscherenmann/programming/cnnframework/src -O2 -g -DNDEBUG -o test/CMakeFiles/TestLayers.dir/TestLayers.cpp.o -c /home/derscherenmann/programming/cnnframework/test/TestLayers.cpp",
+  "file": "/home/derscherenmann/programming/cnnframework/test/TestLayers.cpp"
 }
 ]
