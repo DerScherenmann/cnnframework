@@ -1,12 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * File:   convnetwork.h
- * Author: broesel233
+ * Author: DerScherenmann
  *
  * Created on 5 September 2020, 21:02
  */
@@ -67,7 +61,7 @@ public:
     } struct_training_data;
     
     /*
-     * TODO compare float and double as soon as the network ist complete
+     * TODO compare float and double as soon as the network is complete
      */
     Convolutional(std::vector<size_t> t_connected_matrix_size,std::vector<size_t> t_architecture,std::vector<size_t> t_num_filters,std::vector<size_t> t_filters_size,size_t t_pools_size,size_t t_zero_padding) :
          m_connected_matrix_size(t_connected_matrix_size),m_architecture(t_architecture),m_num_filters(t_num_filters),  m_filters_size(t_filters_size), m_pools_size(t_pools_size), m_zero_padding(t_zero_padding)
@@ -119,9 +113,15 @@ public:
      * @return std::pair<std::vector<float>,std::vector<float>> vector of ouputs,deltas
      */
     std::pair<std::vector<float>,std::vector<float>> feed_forward(struct_training_data &t_data);
-    
-    size_t run_tests();
-    
+
+    [[maybe_unused]] size_t run_tests();
+
+    /**
+     * @brief Get error from network
+     * @return float network error
+     */
+    float getError();
+
 private:
     size_t m_num_layers;
     std::vector<size_t> m_filters_size;
@@ -132,6 +132,7 @@ private:
     float m_momentum;
     size_t m_epochs;
     size_t m_zero_padding;
+    float m_error;
     // TODO make this a pointer and enable custom function submissions
     size_t m_function_type;
     bool m_test;
@@ -152,6 +153,6 @@ private:
     size_t initialize(struct_training_data &t_data);
 
     std::vector<std::vector<Layer*>> m_layers;
-    
+
 };
 

@@ -1,6 +1,6 @@
 /*
  * File:   ConvolutionLayer.h
- * Author: broesel233
+ * Author: DerScherenmann
  *
  * Created on 8 September 2020, 19:51
  */
@@ -20,8 +20,7 @@ public:
     /**
      *
      */
-    ConvolutionLayer(array_2f t_values,size_t t_zero_padding) :
-                        Layer(t_values,Layer::types::CONV) {
+    ConvolutionLayer(array_2f t_values,size_t t_zero_padding) : Layer(t_values,Layer::types::CONV) {
         m_zero_padding = t_zero_padding;
     };
 

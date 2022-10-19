@@ -1,0 +1,141 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						3
+					],
+					"jsonFile" : "directory-.-RelWithDebInfo-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "src",
+					"childIndexes" : 
+					[
+						2
+					],
+					"jsonFile" : "directory-src-RelWithDebInfo-b6cf2213fc5053b67c22.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "src/lib",
+					"jsonFile" : "directory-src.lib-RelWithDebInfo-13ebd6f46d3a8d26f167.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 0,
+					"source" : "src/lib",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "Boost_tests",
+					"jsonFile" : "directory-Boost_tests-RelWithDebInfo-f2c958ff16d0a827047e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Boost_tests",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					],
+					"name" : "convnetwork",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 3,
+					"id" : "Boost_Tests_run::@0cfe60cb577c6d71ec60",
+					"jsonFile" : "target-Boost_Tests_run-RelWithDebInfo-35c76e9061c6815f05b3.json",
+					"name" : "Boost_Tests_run",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "cnn::@145eef247bfb46b6828c",
+					"jsonFile" : "target-cnn-RelWithDebInfo-030e7874e67cbe2e146d.json",
+					"name" : "cnn",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "convnetwork::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-convnetwork-RelWithDebInfo-64b435981ab1df4f9c7b.json",
+					"name" : "convnetwork",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "knn::@dc1a1c76835bc3d8b019",
+					"jsonFile" : "target-knn-RelWithDebInfo-6d1eeb4f8586b9bc9073.json",
+					"name" : "knn",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/derscherenmann/CLionProjects/cnnframework/cmake-build-relwithdebinfo",
+		"source" : "/home/derscherenmann/CLionProjects/cnnframework"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

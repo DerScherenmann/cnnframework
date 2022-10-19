@@ -10,9 +10,7 @@
  *
  * Created on 6 September 2020, 15:42
  */
-
-#ifndef POOLLAYER_H
-#define POOLLAYER_H
+#pragma once
 
 #include <algorithm>
 #include <tuple>
@@ -24,11 +22,20 @@
 using namespace layer;
 
 /**
- * Pooling Layer
+ * Class Pool Layer
  */
 class PoolLayer : public Layer {
 public:
-
+    /**
+     * @brief Constructs PoolLayer \n
+     * A PoolLayer will downsample the given inputs by iterating over them. \n
+     * E.g. A PoolLayer with the size 2*2 will give 1 value while the input was 4 values
+     * @param t_values array_2f input values
+     * @param t_width size_t PoolLayer width
+     * @param t_height size_t PoolLayer height
+     * @param t_stride size_t stride
+     * @param t_pool_op size_t pool operation enum
+     */
     PoolLayer(array_2f t_values,size_t t_width,size_t t_height,size_t t_stride,size_t t_pool_op) : Layer(t_values,Layer::POOL), m_width(t_width), m_height(t_height), m_stride(t_stride), m_pool_op(t_pool_op) {};
     //PoolLayer(const PoolLayer& orig) : Layer(orig) {};
     virtual ~PoolLayer(){};
@@ -54,6 +61,7 @@ public:
     size_t pool_max(array_2f t_input){
 
         // Add padding if stride > 1
+        // TODO this may be wrong, should be (m_stride % m_width != 0)
         if(m_stride > 1){
             //Padding can't be greater than 1 (except if stride >= m_width/m_height)
             size_t padding_width = t_input.size() % m_width;
@@ -272,5 +280,3 @@ private:
     size_t m_pool_op;
     array_2f m_input_values;
 };
-
-#endif /* POOLLAYER_H */

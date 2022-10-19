@@ -5,7 +5,7 @@ project(convnetwork)
 add_subdirectory(src)
 
 enable_testing()
-add_subdirectory(test)
+add_subdirectory(Boost_tests)
 
 add_executable( ${PROJECT_NAME} main.cpp)
 #links lib

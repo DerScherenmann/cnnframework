@@ -1,18 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * File:   ConnectedLayer.h
- * Author: broesel233
+ * Author: DerScherenmann
  *
  * Created on 6 September 2020, 15:51
  */
 
-#ifndef CONNECTEDLAYER_H
-#define CONNECTEDLAYER_H
+#pragma once
 
 #include <utility>
 #include <iostream>
@@ -75,6 +68,3 @@ private:
     std::vector<float> m_net_output;
     Network* m_net;
 };
-
-#endif /* CONNECTEDLAYER_H */
-

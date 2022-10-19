@@ -6,11 +6,6 @@
 #include <utility>
 
 typedef unsigned char uchar;
-std::vector<std::vector<float>> images;
-uchar* labels;
-std::vector<std::vector<float>> testimages;
-uchar* testlabels;
-size_t read_stuff(size_t number_of_images_open,size_t number_of_labels_open);
 
 using namespace layer;
 
@@ -37,13 +32,13 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
             // feed forward
             // this returns deltas of connected layer 
             std::pair<std::vector<float>,std::vector<float>> return_values = feed_forward(data);
-            
+
             // Problem: if there are negative values and zero padding is used with max pooling, net output will be 0
             std::vector<float> outputs = return_values.first;
-            std::vector<float> deltas = return_values.second;
+            std::vector<float> deltaVector = return_values.second;
 
             // Error
-            float data_error = 0;
+            double data_error = 0;
             for(size_t i = 0;i < outputs.size();i++){
                 data_error = pow(data.corrrect_outputs[i] - outputs[i],2);
             }
@@ -66,7 +61,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                 layer_deltas.resize(boost::extents[m_layers[m_layers.size()-2][i]->get_values().size()][m_layers[m_layers.size()-2][i]->get_values()[0].size()]);
                 for(size_t j = 0;j < m_layers[m_layers.size()-2][i]->get_values().size();j++){
                     for(size_t k = 0;k < m_layers[m_layers.size()-2][i]->get_values()[0].size();k++){
-                        layer_deltas[j][k] = deltas[i* (j*m_layers[m_layers.size()-2][i]->get_values().size()+k)];
+                        layer_deltas[j][k] = deltaVector[i* (j*m_layers[m_layers.size()-2][i]->get_values().size()+k)];
                     }
                 }
                 m_layers[m_layers.size()-2][i]->set_deltas(layer_deltas);
@@ -74,12 +69,12 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
 
             std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
-            // Backpropagate through network; Exclude input layer
+            // Backpropagation through network; Exclude input layer
             for(size_t i = m_layers.size()-2;i > 0;i--){
                 size_t layer_type = m_layers[i][0]->get_type();
                 for(size_t num_layer = 0;num_layer < m_layers[i].size();num_layer++){
                     switch (layer_type){
-                        case(Layer::CONV):{
+                        case Layer::CONV:{
                             // Get index for Filters that should be used
                             size_t num_conv_layer_incl = 0;
                             for(size_t j = 0;j < m_layers.size();j++){
@@ -97,7 +92,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                                 // Magic
                                 layer::fshared_ptr_t f = m_filters[index_filter-1][num_layer];
                                 m_layers[i][num_layer]->set_filter(f);
-                                
+
                                 array_2f deltas = m_layers[i+1][num_layer]->get_deltas();
                                 m_layers[i][num_layer]->set_deltas(deltas);
                                 m_layers[i][num_layer]->backwards_propagation(m_layers[i][num_layer]->get_values());
@@ -107,7 +102,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                             }
                             break;
                         }
-                        case(Layer::POOL):{
+                        case Layer::POOL:{
                             // Deltas for last layer before connected layer where set above
                             array_2f deltas = (i == (m_layers.size()-2)) ? m_layers[i][num_layer]->get_deltas() : m_layers[i+1][num_layer]->get_deltas();
                             m_layers[i][num_layer]->set_deltas(deltas);
@@ -116,11 +111,14 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                         }
                         //TODO this may be wrong 
                         // Just get deltas from previous layer and apply them
-                        case(Layer::ACT):{
+                        case Layer::ACT:{
                             array_2f deltas = (i == (m_layers.size()-2)) ? m_layers[i][num_layer]->get_deltas() : m_layers[i+1][num_layer]->get_deltas();
                             m_layers[i][num_layer]->set_deltas(deltas);
                             break;
                         }
+						default:
+							std::cerr << "Wrong layer type" << std::endl;
+							break;
                     }
                 }
             }
@@ -146,8 +144,7 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
                     size_t index_filter = i - ((i+1)-num_conv_layer_incl) -1;
                     
                     for(size_t j = 0;j < m_layers[i-1].size();j++){
-                        for(size_t filter_num = 0;filter_num < m_filters[index_filter].size();filter_num++){
-                            fshared_ptr_t filter = m_filters[index_filter][filter_num];
+                        for(const auto& filter : m_filters[index_filter]){
                             filter->get_kernels()[j]->calculate_gradient(m_layers[i-1][j]->get_values());
                         }        
                     }
@@ -156,7 +153,8 @@ size_t Convolutional::train(std::vector<struct_training_data> &t_training_data,s
 
 
         }
-        std::cout << "Error: " << batch_error/t_training_data.size() << std::endl;
+        m_error = batch_error/t_training_data.size();
+        std::cout << "Error: " << m_error << std::endl;
     }
 
     std::cout << "Finished training" << std::endl;
@@ -260,11 +258,14 @@ std::pair<std::vector<float>,std::vector<float>> Convolutional::feed_forward(str
 
                     std::vector<float> net_outputs = m_layers[i][num_layer]->get_net_output();
                     std::vector<float> deltas = m_layers[i][num_layer]->train(t_data.corrrect_outputs, m_learning_rate, m_momentum);
-                    
+
                     outputs = std::make_pair(net_outputs, deltas);
 
                     break;
                 }
+				default:
+					std::cerr << "Wrong layer type" << std::endl;
+					break;
             }
         }
     }
@@ -390,9 +391,9 @@ size_t Convolutional::initialize(struct_training_data &t_data){
             case Layer::ACT:{
                 // Add activation layers
                 std::vector<Layer*> activation_layers;
-                for(size_t i = 0;i < m_layers[num_layers_size-1].size();i++){
-                    ActivationLayer* layer = new ActivationLayer(m_layers[num_layers_size-1][i]->get_values(),m_function_type);
-                    layer->calculate(m_layers[num_layers_size-1][i]->get_values());
+                for(auto & i : m_layers[num_layers_size-1]){
+                    ActivationLayer* layer = new ActivationLayer(i->get_values(),m_function_type);
+                    layer->calculate(i->get_values());
                     activation_layers.push_back(layer);
                 }
                 m_layers.push_back(activation_layers);
@@ -431,7 +432,7 @@ size_t Convolutional::initialize(struct_training_data &t_data){
     return 0;
 }
 
-size_t Convolutional::run_tests(){
+[[maybe_unused]] size_t Convolutional::run_tests(){
 
     m_test = true;
 
@@ -527,7 +528,7 @@ size_t Convolutional::run_tests(){
     std::cout << "Test Pool Layer: " << std::endl;
 
     std::cout << std::endl << "Max Pooling:" << std::endl;
-    //Filters were replaced by standartized input values, leave this, to generate more inputs for connected layer
+    //Filters were replaced by standardized input values, leave this, to generate more inputs for connected layer
     for(size_t i = 0; i < architecture.size();i++){
 
         for(size_t n = 0;n < architecture[i].size();n++) {
@@ -744,6 +745,13 @@ size_t Convolutional::run_tests(){
     return 0;
 }
 
+float Convolutional::getError() {
+    return m_error;
+}
+std::vector<std::vector<float>> images;
+uchar* labels;
+std::vector<std::vector<float>> testimages;
+uchar* testlabels;
 
 size_t read_stuff(size_t number_of_images_open,size_t number_of_labels_open) {
 

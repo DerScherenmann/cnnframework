@@ -1,0 +1,21 @@
+# ninja log v5
+1922	2101	1652862279672468665	Boost_tests/Boost_Tests_run	72cce79b41a1bcd8
+2	1422	1652860325202851545	src/lib/CMakeFiles/knn.dir/network.cpp.o	cd47d0f867277dc3
+2	605	1652860324386179127	src/lib/CMakeFiles/knn.dir/mathhelper.cpp.o	a6e1297a53f403f2
+1422	1561	1652860325342852525	src/lib/libknn.a	4a60f09bd1651c57
+3	2500	1652861773197361820	Boost_tests/CMakeFiles/Boost_Tests_run.dir/NetworkTest.cpp.o	4c10d51c63cd320d
+0	32	1664203700433390440	build.ninja	b4fedc22c478a37b
+2	3503	1652861774197363412	src/CMakeFiles/cnn.dir/convnetwork.cpp.o	a6eccc197fac006c
+812	911	1651562653761617337	test/TestLayers	d0ae7c567d262a19
+3503	3551	1652861774247363491	src/libcnn.a	17ab7eb2f87b7dae
+3773	3984	1652860327762869358	convnetwork	deb0bc6f79becccc
+1	2703	1652860326482860488	CMakeFiles/convnetwork.dir/main.cpp.o	513ceaaba89d5fa8
+3	811	1651562653661617199	test/CMakeFiles/TestLayers.dir/TestLayers.cpp.o	bc4be5d08e02a4a1
+2	1921	1652862279492467873	Boost_tests/CMakeFiles/Boost_Tests_run.dir/PoolLayerTests.cpp.o	1e969cbacfbcf3f7
+3	551	1664204466043420523	src/lib/CMakeFiles/knn.dir/mathhelper.cpp.o	a6e1297a53f403f2
+2	1704	1664204467196753902	src/lib/CMakeFiles/knn.dir/network.cpp.o	cd47d0f867277dc3
+1704	1747	1664204467240087237	src/lib/libknn.a	4a60f09bd1651c57
+2	4770	1664204470256754022	src/CMakeFiles/cnn.dir/convnetwork.cpp.o	a6eccc197fac006c
+4770	4882	1664204470366754026	src/libcnn.a	17ab7eb2f87b7dae
+2	2956	1664204473520087484	CMakeFiles/convnetwork.dir/main.cpp.o	513ceaaba89d5fa8
+2956	3132	1664204473696754157	convnetwork	deb0bc6f79becccc

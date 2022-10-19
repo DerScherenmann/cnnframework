@@ -537,10 +537,11 @@ int Network::load(std::string filename) {
 std::vector<float> Network::train_once(std::pair<std::vector<float>, std::vector<float>> &pair,float t_learningRate,float t_momentum){
     learningRate = t_learningRate;
     momentum = t_momentum;
-    //returned deltas of input layer
+    // Returned deltas of input layer
     std::vector<float> deltas;
 	
     //TODO improve performance of forward propagation
+
     // Set input activations
     feedForward(pair.first);
 
