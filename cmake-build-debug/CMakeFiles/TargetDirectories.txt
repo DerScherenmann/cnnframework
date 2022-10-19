@@ -1,0 +1,16 @@
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/CMakeFiles/convnetwork.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/CMakeFiles/test.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/CMakeFiles/cnn.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/CMakeFiles/test.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/CMakeFiles/edit_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/CMakeFiles/rebuild_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/lib/CMakeFiles/knn.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/lib/CMakeFiles/test.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/lib/CMakeFiles/edit_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/src/lib/CMakeFiles/rebuild_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/Boost_tests/CMakeFiles/Boost_Tests_run.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/Boost_tests/CMakeFiles/test.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/Boost_tests/CMakeFiles/edit_cache.dir
+/home/derscherenmann/CLionProjects/cnnframework/cmake-build-debug/Boost_tests/CMakeFiles/rebuild_cache.dir
